@@ -1,0 +1,70 @@
+06:31:16[
+  { func_name: 'onrequest', time_record: 0.000010499992640689015 },
+  { uptime: '2ms', path: 'handle_POST' }
+]
+06:31:16'POST 200 ws=undefined 127.0.0.1 [3ms] /api/v1/'
+06:31:17'POST 200 ws=undefined 127.0.0.1 [1ms] /api/v1/'
+06:31:17[
+  { func_name: 'onrequest', time_record: 0.0000022000021999701858 },
+  { uptime: '1ms', path: 'handle_POST' }
+]
+06:31:18'POST 200 ws=undefined 127.0.0.1 [2ms] /api/v1/'
+06:31:18[
+  { func_name: 'onrequest', time_record: 0.0000025000044843181968 },
+  { uptime: '1ms', path: 'handle_POST' }
+]
+06:31:19'POST 200 ws=undefined 127.0.0.1 [1ms] /api/v1/'
+06:31:19[
+  { func_name: 'onrequest', time_record: 0.0000026000052457675338 },
+  { uptime: '1ms', path: 'handle_POST' }
+]
+06:31:20'POST 200 ws=undefined 127.0.0.1 [3ms] /api/v1/'
+06:31:20[
+  { func_name: 'onrequest', time_record: 0.0000024000037228688598 },
+  { uptime: '2ms', path: 'handle_POST' }
+]
+06:31:21'POST 200 ws=undefined 127.0.0.1 [1ms] /api/v1/'
+06:31:21[
+  { func_name: 'onrequest', time_record: 0.0000023999891709536314 },
+  { uptime: '1ms', path: 'handle_POST' }
+]
+06:31:21[
+  { func_name: 'onrequest', time_record: 0.0000017999991541728377 },
+  { uptime: '0ms', path: 'handle_POST' }
+]
+06:31:21'POST 200 ws=undefined 127.0.0.1 [1ms] /api/v1/'
+16:27:38'POST 200 ws=undefined 127.0.0.1 [35653303ms] /api/v1/'
+16:27:38[
+  { func_name: 'onrequest', time_record: 0.0000021000014385208488 },
+  { uptime: '35653295ms', path: 'handle_POST' }
+]
+16:27:44'POST 200 ws=undefined 127.0.0.1 [19ms] /api/v1/'
+16:27:44[
+  { func_name: 'onrequest', time_record: 0.0000025999906938523054 },
+  { uptime: '18ms', path: 'handle_POST' }
+]
+16:27:48'POST 200 ws=undefined 127.0.0.1 [1ms] /api/v1/'
+16:27:48[
+  { func_name: 'onrequest', time_record: 0.0000019000144675374031 },
+  { uptime: '0ms', path: 'handle_POST' }
+]
+16:28:11'POST 200 ws=undefined 127.0.0.1 [1ms] /api/v1/'
+16:28:11[
+  { func_name: 'onrequest', time_record: 0.0000032999960239976645 },
+  { uptime: '1ms', path: 'handle_POST' }
+]
+16:29:25'POST 200 ws=undefined 127.0.0.1 [1ms] /api/v1/'
+16:29:25[
+  { func_name: 'onrequest', time_record: 0.000002200016751885414 },
+  { uptime: '0ms', path: 'handle_POST' }
+]
+16:29:56'POST 200 ws=undefined 127.0.0.1 [3ms] /api/v1/'
+16:29:56[
+  { func_name: 'onrequest', time_record: 0.000002100015990436077 },
+  { uptime: '2ms', path: 'handle_POST' }
+]
+16:30:21'POST 200 ws=undefined 127.0.0.1 [3ms] /api/v1/'
+16:30:21[
+  { func_name: 'onrequest', time_record: 0.000002200016751885414 },
+  { uptime: '2ms', path: 'handle_POST' }
+]
