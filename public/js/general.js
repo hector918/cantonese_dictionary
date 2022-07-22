@@ -96,7 +96,7 @@ function raw_post(data,path,cb)
   };
   
   xhttp.open("POST", path );
-  xhttp.send("at="+JSON.stringify(data));
+  xhttp.send(JSON.stringify(data));
 }
 export {
   createHTML_json as cej,

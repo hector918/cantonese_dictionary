@@ -1,5 +1,6 @@
 const fs = require('fs');const util = require('util');
 // const CryptoJS = require("crypto-js");
+const db_action =  require('./db_action.js');
 const config =  require('./config.js');
 // const tg =  require('./telegram.js');
 function debug_to_file(content)
@@ -27,75 +28,110 @@ function debug_step_log(par,step)
   }
   return par;
 }
-function handle_POST(par)
+async function handle_POST(par)
 {
 	var par_=debug_step_log(par,"handle_POST");
     
-	var body = [];
-	try
-	{
-    //post body大小上限 unit byte
-    const body_limit = config.post_body_limit;
-    var body_size = 0;
-		par.Request.on('data', function(chunk) {
-      
-      body_size += chunk.length;
-      
-      if( body_size > body_limit )
-      {
-        par_.ResContent.status_code = 413;
-        api_res_end(par_);
-        return;
-      }
-      if(body)
-      {
-        body.push(chunk);
-      }
-    }).on('end', () => 
-    {
-            
-			if(body.length>0)
-			{
-				//如果有内容
-        body = Buffer.concat(body).toString();
-        
-        try{
-          body = JSON.parse(body.replace("at=",""));
-          par_.result = true;//非必要
-          par_.postBody = body;
-        }
-        catch{
-          par_.postBody = [];
-        }
-        process_post(par_);
-        /*
-        if(par.callback)
-        {
-          par.callback( par_);
-        }
-        */
-			}
-			else
-			{
-				//如果没有内容
-        par_.result = false;//非必要
-        par_.postBody = [];
-        process_post(par_);
-        /*
-        if(par.callback)
-        {
-          par.callback( par_);
-        }
-        */
-			}
-		});
-	}
-	catch(ex)
-	{
-    console.log("handle post "+ex)
+  //v2
+  try {
+    const buffers = [];
+    
+    for await(const chunk of par.Request) {
+      buffers.push(chunk);
+    }
+    const data = Buffer.concat(buffers).toString();
+    const json = JSON.parse(data);
+    par_.postBody = json;
+
+  } catch (error) {
+
+    par_.postBody = "";
+    console.log("handle post " + error)
     par_.ResContent.status_code = 500;
     api_res_end(par_);
-	}
+    return;
+  }
+
+  process_post(par_);
+  //in gerenal callback will be null
+  if(par.callback)
+  {
+    par.callback( par_);
+  }
+
+  ////////////////////////////////////////////////
+  //v1
+	// var body = [];
+	
+  // try
+	// {
+  //   //post body大小上限 unit byte
+  //   const body_limit = config.post_body_limit;
+  //   var body_size = 0;
+  //   /*
+  //     for await (const chunk of req) {
+  //       buffers.push(chunk);
+  //     }
+  //   */
+	// 	par.Request.on('data', function(chunk) {
+      
+  //     body_size += chunk.length;
+      
+  //     if( body_size > body_limit )
+  //     {
+  //       par_.ResContent.status_code = 413;
+  //       api_res_end(par_);
+  //       return;
+  //     }
+  //     if(body)
+  //     {
+  //       body.push(chunk);
+  //     }
+  //   }).on('end', () => 
+  //   {
+            
+	// 		if(body.length>0)
+	// 		{
+	// 			//如果有内容
+  //       body = Buffer.concat(body).toString();
+        
+  //       try{
+  //         body = JSON.parse(body.replace("at=",""));
+  //         par_.result = true;//非必要
+  //         par_.postBody = body;
+  //       }
+  //       catch{
+  //         par_.postBody = [];
+  //       }
+  //       process_post(par_);
+  //       /*
+  //       if(par.callback)
+  //       {
+  //         par.callback( par_);
+  //       }
+  //       */
+	// 		}
+	// 		else
+	// 		{
+	// 			//如果没有内容
+  //       par_.result = false;//非必要
+  //       par_.postBody = [];
+  //       process_post(par_);
+  //       /*
+  //       if(par.callback)
+  //       {
+  //         par.callback( par_);
+  //       }
+  //       */
+	// 		}
+	// 	});
+	// }
+	// catch(ex)
+	// {
+  //   console.log("handle post "+ex)
+  //   par_.ResContent.status_code = 500;
+  //   api_res_end(par_);
+	// }
 	//handle
 }
 function process_post(par)
@@ -118,7 +154,6 @@ function process_post(par)
 
       console.log(decryptedData); // [{id: 1}, {id: 2}]
       */
-      console.log(tg.user_array)
       if(tg.user_array[par.postBody.username]!=undefined)
       {
 
@@ -148,7 +183,7 @@ function process_post(par)
     break;
     case "addrecord":
       //
-      const db_action =  require('./db_action.js');
+      
       db_action.add_record(par.postBody,(result)=>{
         par.ResContent={
           content:{
@@ -160,6 +195,11 @@ function process_post(par)
         };
         api_res_end(par);
       });
+    break;
+    case "readrecord":
+      db_action.read_record((result)=>{
+        console.log(result);
+      })
     break;
 		default:
 			console.log("unhandle post-"+par.Request.url);
