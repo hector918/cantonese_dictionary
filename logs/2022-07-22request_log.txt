@@ -1,0 +1,56 @@
+19:22:56/Applications/qi/dev/cantonese_dictonary_01/handling_post.js:38
+    for await (const chunk of par.Request) {
+        ^^^^^
+
+SyntaxError: Unexpected reserved word
+    at Object.compileFunction (node:vm:360:18)
+    at wrapSafe (node:internal/modules/cjs/loader:1049:15)
+    at Module._compile (node:internal/modules/cjs/loader:1084:27)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1174:10)
+    at Module.load (node:internal/modules/cjs/loader:998:32)
+    at Module._load (node:internal/modules/cjs/loader:839:12)
+    at Module.require (node:internal/modules/cjs/loader:1022:19)
+    at require (node:internal/modules/cjs/helpers:102:18)
+    at Server.OnRequest (/Applications/qi/dev/cantonese_dictonary_01/router.js:66:20)
+    at Server.emit (node:events:513:28)
+19:25:39/Applications/qi/dev/cantonese_dictonary_01/db_action.js:32
+  let result = await mysql_obj.get_all(sql);
+               ^^^^^
+
+SyntaxError: await is only valid in async functions and the top level bodies of modules
+    at Object.compileFunction (node:vm:360:18)
+    at wrapSafe (node:internal/modules/cjs/loader:1049:15)
+    at Module._compile (node:internal/modules/cjs/loader:1084:27)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1174:10)
+    at Module.load (node:internal/modules/cjs/loader:998:32)
+    at Module._load (node:internal/modules/cjs/loader:839:12)
+    at Module.require (node:internal/modules/cjs/loader:1022:19)
+    at require (node:internal/modules/cjs/helpers:102:18)
+    at Object.<anonymous> (/Applications/qi/dev/cantonese_dictonary_01/handling_post.js:3:20)
+    at Module._compile (node:internal/modules/cjs/loader:1120:14)
+19:26:48/Applications/qi/dev/cantonese_dictonary_01/mysql_class_not_sync.js:297
+export {
+^^^^^^
+
+SyntaxError: Unexpected token 'export'
+    at Object.compileFunction (node:vm:360:18)
+    at wrapSafe (node:internal/modules/cjs/loader:1049:15)
+    at Module._compile (node:internal/modules/cjs/loader:1084:27)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1174:10)
+    at Module.load (node:internal/modules/cjs/loader:998:32)
+    at Module._load (node:internal/modules/cjs/loader:839:12)
+    at Module.require (node:internal/modules/cjs/loader:1022:19)
+    at require (node:internal/modules/cjs/helpers:102:18)
+    at Object.<anonymous> (/Applications/qi/dev/cantonese_dictonary_01/db_action.js:3:30)
+    at Module._compile (node:internal/modules/cjs/loader:1120:14)
+19:34:05ReferenceError: post_log is not defined
+    at mysql_c.connect (/Applications/qi/dev/cantonese_dictonary_01/mysql_class_not_sync.js:39:7)
+    at new mysql_c (/Applications/qi/dev/cantonese_dictonary_01/mysql_class_not_sync.js:19:10)
+    at Object.<anonymous> (/Applications/qi/dev/cantonese_dictonary_01/mysql_class_not_sync.js:293:19)
+    at Module._compile (node:internal/modules/cjs/loader:1120:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1174:10)
+    at Module.load (node:internal/modules/cjs/loader:998:32)
+    at Module._load (node:internal/modules/cjs/loader:839:12)
+    at Module.require (node:internal/modules/cjs/loader:1022:19)
+    at require (node:internal/modules/cjs/helpers:102:18)
+    at Object.<anonymous> (/Applications/qi/dev/cantonese_dictonary_01/db_action.js:3:30)
