@@ -67,31 +67,40 @@ class search_page {
       placeholder:"Search..."
     }
     return {
-      export_:"search_page",
-      tagname_ : "section",
-      class : "hero is-medium",
-      style:`transition: background-image ease-in-out 0.5s;background: url(https://picsum.photos/${Math.round(window.innerWidth*1.1)}/${Math.round(window.innerHeight*1.1)}?blur=2);background-position:center;background-color:rgba(0, 0, 0, 0.5);background-size: cover;`,
-      childrens_ : [{
-        class : "hero-body has-text-centered",
-        childrens_ : [
-          {
-            tagname_:"h1",
-            class:"title is-2",
-            innerHTML_:"Word for search.",
-            style:"text-shadow: #fff 1px 0 0, #fff 0 1px 0, #fff -1px 0 0, #fff 0 -1px 0;",
-          },
-          {
-            class:"field has-addons has-addons-centered",
-            childrens_:[
+      childrens_:[
+        {
+          export_:"search_page",
+          tagname_ : "section",
+          class : "hero is-medium",
+          style:`transition: background-image ease-in-out 0.5s;background: url(https://picsum.photos/${Math.round(window.innerWidth*1.1)}/${Math.round(window.innerHeight*1.1)}?blur=2);background-position:center;background-color:rgba(0, 0, 0, 0.5);background-size: cover;`,
+          childrens_ : [{
+            class : "hero-body has-text-centered",
+            childrens_ : [
               {
-                class : "control",
-                childrens_:[search_input]
+                tagname_:"h1",
+                class:"title is-2",
+                innerHTML_:"Word for search.",
+                style:"text-shadow: #fff 1px 0 0, #fff 0 1px 0, #fff -1px 0 0, #fff 0 -1px 0;",
+              },
+              {
+                class:"field has-addons has-addons-centered",
+                childrens_:[
+                  {
+                    class : "control",
+                    childrens_:[search_input]
+                  }
+                ]
               }
             ]
-          }
-        ]
-      }]
-    };
+          }]
+        },
+        {
+          class:"tile",
+          
+        }
+      ]
+    }
+    ;
   }
   constructor(parent) {
     this.parent = parent;

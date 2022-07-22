@@ -1,4 +1,3 @@
-
 const {mysql_obj} = require('./mysql_class.js');
 //====================================================================
 async function add_record(data,callback)
@@ -9,18 +8,23 @@ async function add_record(data,callback)
     action : "add_record",
     content : JSON.stringify(data.data),
   }
-  let steps_feedback =await mysql_obj.insert([stepPreparingData],"cantonese_dictionary_steps_data");
+  let steps_feedback = await mysql_obj.insert([stepPreparingData],"cantonese_dictionary_steps_data");
 
   let masterPreparingData = {
     english:data.data['english'],
     chinese:data.data['chinese'],
     json_data:JSON.stringify(data.data),
   };
-  let master_feedback =await mysql_obj.insert([masterPreparingData],"cantonese_dictionary_master_data");
+  let master_feedback = await mysql_obj.insert([masterPreparingData],"cantonese_dictionary_master_data");
   callback(master_feedback.affectedRows+steps_feedback.affectedRows);
 }
 
-
+function get_record()
+{
+  //
+  let sql = " select * from `cantonese_dictionary_master_data` where 1";
+  
+}
 ///////////////////////////////////////////////////////////////
 module.exports = { 
   add_record,

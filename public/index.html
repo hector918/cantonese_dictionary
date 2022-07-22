@@ -13,44 +13,52 @@
     <!--https://cdnjs.com/libraries/crypto-js-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
-        
+        /* html{
+            height:100%;
+        }
+        body{
+            height: 100%;
+        } */
     </style>
     <script type="module">
         import {search_page} from './components/search_page.js';
         import {input_page} from './components/input_page.js';
-        new input_page(document.body);
+        import {frame_for_two} from './components/frame_for_two.js';
+        let frame = new frame_for_two(document.body);
+        new input_page(frame.left_frame);
+        new search_page(frame.right_frame);
     </script>
     <script>
         var page_var = {
             hashkey : null,
         }
         
-        function raw_post_c(data,path)
-        {
-            //
+        // function raw_post_c(data,path)
+        // {
+        //     //
             
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
+        //     var xhttp = new XMLHttpRequest();
+        //     xhttp.onreadystatechange = function() {
+        //         if (this.readyState == 4 && this.status == 200) {
                     
-                    try {
-                        var bytes  = CryptoJS.AES.decrypt(this.responseText, '1234');
+        //             try {
+        //                 var bytes  = CryptoJS.AES.decrypt(this.responseText, '1234');
                         
-                        var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));    
-                        console.log(decryptedData)
-                    } catch (error) {
-                        console.log("wrong encryption")
-                    }
+        //                 var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));    
+        //                 console.log(decryptedData)
+        //             } catch (error) {
+        //                 console.log("wrong encryption")
+        //             }
                     
 
                     
-                    //process_receive_normal(this.responseText);
-                }
-            };
+        //             //process_receive_normal(this.responseText);
+        //         }
+        //     };
             
-            xhttp.open("POST", path );
-            xhttp.send("at="+JSON.stringify(data));
-        }
+        //     xhttp.open("POST", path );
+        //     xhttp.send("at="+JSON.stringify(data));
+        // }
     </script>
 </head>
 
