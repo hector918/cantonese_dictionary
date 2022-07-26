@@ -1,25 +1,110 @@
-import {cej,preload_image} from '../js/general.js';
+import {cej,preload_image,raw_post} from '../js/general.js';
 class search_page {
-  on_submit(evt)
+  on_send_request(evt)
   {
+    raw_post({action:"readrecord",parameter:{}},"api/v1",(responses_text)=>{
+      try {
+        let json = JSON.parse(responses_text);
+        for(let x of json['result'])
+        {
+          this.create_one_tile(JSON.parse(x));
+        }
+      } catch (error) {
+        console.log(error);
+      }
       
-    evt.preventDefault();
+    });  
+    //evt.preventDefault();
   
   }
-  on_username_click(evt)
+  on_input_box_keyup(evt)
   {
-    //
-    console.log(evt)
-    try {
+    this.time_intervel=0;
+  }
 
-      let form = {action : "login",username:"11"};
+  create_one_tile(json)
+  {
+    
+    let inner_field = [];
 
-      //var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(form), 'secret key 123').toString();
-
-      raw_post(form,"/api/v1/");
-    } catch (error) {
-      console.log(error)
+    inner_field.push({
+      class:"title",
+      innerHTML_:json['english'],
+    });
+    inner_field.push({
+      class:"subtitle",
+      innerHTML_:json['chinese'],
+    });
+    inner_field.push({
+      class:"title",
+      innerHTML_:json['phonics'],
+    });
+    for(let x in json)
+    {
+      switch(x){
+        case "english":case "chinese":
+          //
+        break;
+        case "phonics":
+          //
+          
+        break;
+        default:
+          //
+          inner_field.push({
+            tagname_:"p",
+            innerHTML_:json[x],
+          })
+      }
     }
+
+    let tileStructure = {class:"column is-one-third",childrens_:[
+      {
+        //
+        class:"card",
+        childrens_:[
+          {
+            class:"card-content",
+            childrens_:inner_field,
+          },
+          // {
+          //   tagname_:"footer",
+          //   class:"card-footer",
+          //   childrens_:[
+          //     {
+          //       tagname_:"p",
+          //       class:"card-footer-item",
+          //       childrens_:[{
+          //         tagname_:"span",
+          //         innerHTML_:"View on ",
+          //         childrens_:[{
+          //           tagname_:"a",href:"https://twitter.com/codinghorror/status/506010907021828096",
+          //           innerHTML_:"Twitter",
+          //         }]
+          //       }]
+          //     },
+          //     {
+          //       tagname_:"p",
+          //       class:"card-footer-item",
+          //       childrens_:[{
+          //         tagname_:"span",
+          //         innerHTML_:"Share on ",
+          //         childrens_:[{
+          //           tagname_:"a",
+          //           href:"#",
+          //           innerHTML_:"Facebook",
+          //         }]
+          //       }]
+          //     }
+          //   ]
+          // }
+        ]
+      }
+    ]};
+
+    let tile = cej(tileStructure,this['tile_frame']);
+    this['tile_frame'].insertBefore(tile.self,this['tile_frame'].childNodes[0]);
+    
   }
   on_verification_click(evt)
   {
@@ -95,7 +180,8 @@ class search_page {
           }]
         },
         {
-          class:"tile",
+          class:"columns is-multiline",
+          export_:"tile_frame",
           
         }
       ]
@@ -107,10 +193,7 @@ class search_page {
     this.parent = parent;
     //this.structure();
     this.self = cej(this.structure(),this)['self'];
-    this['search_box'].addEventListener("keyup",(evt)=>{
-      //console.log(evt);
-      this.time_intervel=0;
-    });
+    this['search_box'].addEventListener("keyup",this.on_input_box_keyup.bind(this));
 
     ///this is for input box step responses
     let intervel = 1000;
@@ -123,7 +206,7 @@ class search_page {
       
       if(this.time_intervel===intervel)
       {
-        console.log("reach api");
+        this.on_send_request();
       }
     },intervel);
     ///end of input box step responses

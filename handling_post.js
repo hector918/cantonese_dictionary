@@ -198,7 +198,16 @@ function process_post(par)
     break;
     case "readrecord":
       db_action.read_record((result)=>{
-        console.log(result);
+        // console.log(result.map(item=>item['json_data']));
+        par.ResContent={
+          content:{
+            result:result.map(item=>item['json_data']),
+            content:`${result.length} Row affected`,
+            action:par.postBody.action
+          },
+          status_code:200
+        };
+        api_res_end(par);
       })
     break;
 		default:

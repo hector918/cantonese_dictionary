@@ -13,7 +13,7 @@ class input_page {
       uploadData.data[x['name']]=x.value;
       
     }
-    raw_post(uploadData,"addrecord",(text)=>{console.log(text)});
+    raw_post(uploadData,"api/v1",(text)=>{console.log(text)});
     // console.log(uploadData)
   }
 
