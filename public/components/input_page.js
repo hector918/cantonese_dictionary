@@ -95,7 +95,7 @@ class input_page {
 
     let singleCard = ()=>{
       return {
-        class:"column is-one-third",
+        class:"column",
         childrens_:
         [{
           class:"card hover-hack-singlecard",

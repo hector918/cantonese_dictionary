@@ -7,7 +7,7 @@ class frame_for_two {
       class : "container is-fluid",
       
       childrens_ : [{
-        class : "columns is-vcentered",
+        class : "columns",
         childrens_ : [
           {
             class:"column is-6",

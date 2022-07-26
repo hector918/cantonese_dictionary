@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 const util = require('util');
-
+const config = require('./config.js');
 
 function post_log(str)
 {
@@ -296,7 +296,7 @@ mysql_c {
   }
 }
 
-const mysql_obj = new mysql_c('database-1.calgoulufekg.us-east-2.rds.amazonaws.com','freeaaaa','BGdi16C5OfSUIfanBiTk','cantoese_dictionary');
+const mysql_obj = new mysql_c(config.mysql_db_address,config.mysql_db_username,config.mysql_db_pw,config.mysql_db_name);
 
 ///////////////////////////////////////////////////////////////
 

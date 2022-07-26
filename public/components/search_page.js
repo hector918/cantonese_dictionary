@@ -64,7 +64,8 @@ class search_page {
       tagname_:"input",
       class:"input is-medium",
       type:"text",
-      placeholder:"Search..."
+      placeholder:"Search...",
+      export_:"search_box",
     }
     return {
       childrens_:[
@@ -87,8 +88,8 @@ class search_page {
                 childrens_:[
                   {
                     class : "control",
-                    childrens_:[search_input]
-                  }
+                    childrens_:[search_input],
+                  },
                 ]
               }
             ]
@@ -103,9 +104,33 @@ class search_page {
     ;
   }
   constructor(parent) {
+    
     this.parent = parent;
     //this.structure();
-    parent.appendChild(cej(this.structure(),this)['self']);
+    this.self = cej(this.structure(),this)['self'];
+    this['search_box'].addEventListener("keyup",(evt)=>{
+      //console.log(evt);
+      this.time_intervel=0;
+    });
+
+    ///this is for input box step responses
+    let intervel = 1000;
+    this.time_intervel=intervel;
+    setInterval((evt)=>{
+      if(this.time_intervel<=intervel)
+      {
+        this.time_intervel+=intervel;
+      }
+      
+      if(this.time_intervel===intervel)
+      {
+        console.log("reach api");
+      }
+    },intervel);
+    ///end of input box step responses
+
+
+    parent.appendChild(this.self);
 
     // this['login_form'].addEventListener("submit",this.on_submit);
     // this['on_username_button'].addEventListener("click",this.on_username_click);
