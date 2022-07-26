@@ -37,7 +37,6 @@ class search_page {
     } catch (error) {
       console.log(error)
     }
-    
 
     this['on_verification_button'].addEventListener("click",this.on_verification_click);
       
@@ -72,8 +71,8 @@ class search_page {
         {
           export_:"search_page",
           tagname_ : "section",
-          class : "hero is-medium",
-          style:`transition: background-image ease-in-out 0.5s;background: url(https://picsum.photos/${Math.round(window.innerWidth*1.1)}/${Math.round(window.innerHeight*1.1)}?blur=2);background-position:center;background-color:rgba(0, 0, 0, 0.5);background-size: cover;`,
+          class : "hero",
+          style:`transition: background-image ease-in-out 0.5s;background: url(https://picsum.photos/${Math.round(window.innerWidth*1.1)}/500?blur=2);background-position:center;background-color:rgba(0, 0, 0, 0.5);background-size: cover;`,
           childrens_ : [{
             class : "hero-body has-text-centered",
             childrens_ : [
