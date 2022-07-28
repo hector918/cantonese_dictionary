@@ -46,7 +46,7 @@ async function handle_POST(par)
   } catch (error) {
 
     par_.postBody = "";
-    console.log("handle post " + error)
+    console.log("handle post ", error, par.Request)
     par_.ResContent.status_code = 500;
     api_res_end(par_);
     return;

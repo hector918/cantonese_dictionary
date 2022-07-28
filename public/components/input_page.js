@@ -135,12 +135,12 @@ class input_page {
                 {
                   tagname_:"a",
                   class:"card-footer-item",
-                  innerHTML_:"edit"
+                  innerHTML_:"edit",
                 },
                 {
                   tagname_:"a",
                   class:"card-footer-item",
-                  innerHTML_:"delete"
+                  innerHTML_:"delete",
                 },
                 
               ]

@@ -49,11 +49,11 @@ class mysql_c{
   {
     //
     console.log(this.conn.state);
-    // if(this.connected!=="connected"||this.connected!=="authenticated")
-    // {
-    //   await this.close_db();
-    //   await this.connect();
-    // }
+    if(this.connected!=="connected"||this.connected!=="authenticated")
+    {
+      await this.close_db();
+      await this.connect();
+    }
   }
   async list_db()
   {
