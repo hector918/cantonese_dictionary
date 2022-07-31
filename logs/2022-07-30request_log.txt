@@ -1,0 +1,65 @@
+02:11:27ReferenceError: Cannot access 'mysql_pool' before initialization
+    at Object.<anonymous> (/Applications/qi/dev/cantonese_dictonary_01/mysql_pool_class.js:8:1)
+    at Module._compile (node:internal/modules/cjs/loader:1120:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1174:10)
+    at Module.load (node:internal/modules/cjs/loader:998:32)
+    at Module._load (node:internal/modules/cjs/loader:839:12)
+    at Module.require (node:internal/modules/cjs/loader:1022:19)
+    at require (node:internal/modules/cjs/helpers:102:18)
+    at Object.<anonymous> (/Applications/qi/dev/cantonese_dictonary_01/db_action.js:1:21)
+    at Module._compile (node:internal/modules/cjs/loader:1120:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1174:10)
+02:37:20ReferenceError: par is not defined
+    at Server.OnRequest (/Applications/qi/dev/cantonese_dictonary_01/router.js:57:41)
+    at Server.emit (node:events:513:28)
+    at parserOnIncoming (node:_http_server:1009:12)
+    at HTTPParser.parserOnHeadersComplete (node:_http_common:117:17)
+02:37:23ReferenceError: par is not defined
+    at Server.OnRequest (/Applications/qi/dev/cantonese_dictonary_01/router.js:57:41)
+    at Server.emit (node:events:513:28)
+    at parserOnIncoming (node:_http_server:1009:12)
+    at HTTPParser.parserOnHeadersComplete (node:_http_common:117:17)
+04:24:52Error: Cannot find module 'crypto-js'
+Require stack:
+- /Applications/qi/dev/cantonese_dictonary_01/handling_post.js
+- /Applications/qi/dev/cantonese_dictonary_01/router.js
+- /Applications/qi/dev/cantonese_dictonary_01/index.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:956:15)
+    at Module._load (node:internal/modules/cjs/loader:804:27)
+    at Module.require (node:internal/modules/cjs/loader:1022:19)
+    at require (node:internal/modules/cjs/helpers:102:18)
+    at Object.<anonymous> (/Applications/qi/dev/cantonese_dictonary_01/handling_post.js:2:18)
+    at Module._compile (node:internal/modules/cjs/loader:1120:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1174:10)
+    at Module.load (node:internal/modules/cjs/loader:998:32)
+    at Module._load (node:internal/modules/cjs/loader:839:12)
+    at Module.require (node:internal/modules/cjs/loader:1022:19) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Applications/qi/dev/cantonese_dictonary_01/handling_post.js',
+    '/Applications/qi/dev/cantonese_dictonary_01/router.js',
+    '/Applications/qi/dev/cantonese_dictonary_01/index.js'
+  ]
+}
+04:25:16Error: Cannot find module 'crypto-js'
+Require stack:
+- /Applications/qi/dev/cantonese_dictonary_01/handling_post.js
+- /Applications/qi/dev/cantonese_dictonary_01/router.js
+- /Applications/qi/dev/cantonese_dictonary_01/index.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:956:15)
+    at Module._load (node:internal/modules/cjs/loader:804:27)
+    at Module.require (node:internal/modules/cjs/loader:1022:19)
+    at require (node:internal/modules/cjs/helpers:102:18)
+    at Object.<anonymous> (/Applications/qi/dev/cantonese_dictonary_01/handling_post.js:2:18)
+    at Module._compile (node:internal/modules/cjs/loader:1120:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1174:10)
+    at Module.load (node:internal/modules/cjs/loader:998:32)
+    at Module._load (node:internal/modules/cjs/loader:839:12)
+    at Module.require (node:internal/modules/cjs/loader:1022:19) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Applications/qi/dev/cantonese_dictonary_01/handling_post.js',
+    '/Applications/qi/dev/cantonese_dictonary_01/router.js',
+    '/Applications/qi/dev/cantonese_dictonary_01/index.js'
+  ]
+}
