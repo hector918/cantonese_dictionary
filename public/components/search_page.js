@@ -1,13 +1,13 @@
-import {cej,preload_image,raw_post} from '../js/general.js';
+import {cej,preload_image,raw_post,raw_get} from '../js/general.js';
 class search_page {
   on_send_request(evt)
   {
-    raw_post({action:"readrecord",parameter:{}},"api/v1",(responses_text)=>{
+    raw_get("api/v1/readrecord",(responses_text)=>{
       try {
         let json = JSON.parse(responses_text);
         for(let x of json['result'])
         {
-          this.create_one_tile(JSON.parse(x));
+          this.create_one_tile(x);
         }
       } catch (error) {
         console.log(error);
@@ -42,13 +42,10 @@ class search_page {
     for(let x in json)
     {
       switch(x){
-        case "english":case "chinese":
+        case "english":case "chinese":case "phonics":case "tags":
           //
         break;
-        case "phonics":
-          //
-          
-        break;
+        
         default:
           //
           inner_field.push({
@@ -57,7 +54,15 @@ class search_page {
           })
       }
     }
-
+    let tags = [];
+    for(let x in json['tags'])
+    {
+      tags.push({tagname_:"span",class:"tag is-info is-light",innerHTML_:x});
+    }
+    inner_field.push({
+      class:"tags",
+      childrens_:tags,
+    });
     let tileStructure = {class:"column is-one-third",childrens_:[
       {
         //
@@ -218,7 +223,7 @@ class search_page {
     // this['on_username_button'].addEventListener("click",this.on_username_click);
     // this['on_verification_button'].addEventListener("click",this.on_verification_click);
     //this['passwordinput'];
-    
+    this.on_send_request();
 
   }
 

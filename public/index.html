@@ -22,11 +22,7 @@
     </style>
     <script type="module">
         import {search_page} from './components/search_page.js';
-        import {input_page} from './components/input_page.js';
-        import {frame_for_two} from './components/frame_for_two.js';
-        let frame = new frame_for_two(document.body);
-        new input_page(frame.left_frame);
-        new search_page(frame.right_frame);
+        let frame = new search_page(document.body);
     </script>
     <script>
         var page_var = {

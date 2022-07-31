@@ -80,6 +80,27 @@ function getElBy(obj,text,searchTarget="tagName"){
   }
   return result
 }
+function raw_get(path,cb)
+{
+  //
+  
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() 
+  {
+    if (this.readyState == 4 && this.status == 200) {
+      
+      // this.responseText
+      if(cb)
+      {
+        cb(this.responseText);
+      }
+      //process_receive_normal(this.responseText);
+    }
+  };
+  
+  xhttp.open("GET", path );
+  xhttp.send();
+}
 function raw_post(data,path,cb)
 {
   //
@@ -89,8 +110,12 @@ function raw_post(data,path,cb)
   {
     if (this.readyState == 4 && this.status == 200) {
       
-      this.responseText
-      cb(this.responseText);
+      // this.responseText
+      if(cb)
+      {
+        cb(this.responseText);
+
+      }
       //process_receive_normal(this.responseText);
     }
   };
@@ -104,4 +129,5 @@ export {
   appendCSS as appendCSS,
   getElBy as getElBy,
   raw_post as raw_post,
+  raw_get as raw_get,
 }; 

@@ -1,5 +1,6 @@
-const fs = require('fs');const util = require('util');
-// const CryptoJS = require("crypto-js");
+const fs = require('fs');
+const util = require('util');
+const CryptoJS = require("crypto-js");
 const db_action =  require('./db_action.js');
 const config =  require('./config.js');
 // const tg =  require('./telegram.js');
@@ -31,7 +32,7 @@ function debug_step_log(par,step)
 async function handle_POST(par)
 {
 	var par_=debug_step_log(par,"handle_POST");
-    
+  let json;
   //v2
   try {
     const buffers = [];
@@ -40,17 +41,47 @@ async function handle_POST(par)
       buffers.push(chunk);
     }
     const data = Buffer.concat(buffers).toString();
-    const json = JSON.parse(data);
-    par_.postBody = json;
-
+    json = JSON.parse(data);
+  
+    
+    
   } catch (error) {
 
     par_.postBody = "";
-    console.log("handle post ", error, par.Request)
+    console.log("handle post ", error)
     par_.ResContent.status_code = 500;
     api_res_end(par_);
     return;
   }
+
+  try {
+
+    let keypair = await db_action.read_user_keypair(json['username']);
+    if(keypair[json['username']]===undefined)
+    {
+      throw `username ${json['username']} cant be found.`;
+    }
+
+    par_['username'] = json['username'];
+    par_['password'] = keypair[par_['username']];
+
+    let bytes  = CryptoJS.AES.decrypt(json['at'], keypair[json['username']]);
+
+    par_.postBody = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    
+    
+  } catch (error) {
+    par_.postBody = "";
+    console.log("Crypto error ",error)
+    par_.ResContent.status_code = 200;
+    par_.ResContent.content.result = "wrong encryption";
+    par_.ResContent.content.errors="wrong encryption";
+    api_res_end(par_);
+    return;
+  }
+    
+
+  
 
   process_post(par_);
   //in gerenal callback will be null
@@ -59,128 +90,13 @@ async function handle_POST(par)
     par.callback( par_);
   }
 
-  ////////////////////////////////////////////////
-  //v1
-	// var body = [];
-	
-  // try
-	// {
-  //   //post body大小上限 unit byte
-  //   const body_limit = config.post_body_limit;
-  //   var body_size = 0;
-  //   /*
-  //     for await (const chunk of req) {
-  //       buffers.push(chunk);
-  //     }
-  //   */
-	// 	par.Request.on('data', function(chunk) {
-      
-  //     body_size += chunk.length;
-      
-  //     if( body_size > body_limit )
-  //     {
-  //       par_.ResContent.status_code = 413;
-  //       api_res_end(par_);
-  //       return;
-  //     }
-  //     if(body)
-  //     {
-  //       body.push(chunk);
-  //     }
-  //   }).on('end', () => 
-  //   {
-            
-	// 		if(body.length>0)
-	// 		{
-	// 			//如果有内容
-  //       body = Buffer.concat(body).toString();
-        
-  //       try{
-  //         body = JSON.parse(body.replace("at=",""));
-  //         par_.result = true;//非必要
-  //         par_.postBody = body;
-  //       }
-  //       catch{
-  //         par_.postBody = [];
-  //       }
-  //       process_post(par_);
-  //       /*
-  //       if(par.callback)
-  //       {
-  //         par.callback( par_);
-  //       }
-  //       */
-	// 		}
-	// 		else
-	// 		{
-	// 			//如果没有内容
-  //       par_.result = false;//非必要
-  //       par_.postBody = [];
-  //       process_post(par_);
-  //       /*
-  //       if(par.callback)
-  //       {
-  //         par.callback( par_);
-  //       }
-  //       */
-	// 		}
-	// 	});
-	// }
-	// catch(ex)
-	// {
-  //   console.log("handle post "+ex)
-  //   par_.ResContent.status_code = 500;
-  //   api_res_end(par_);
-	// }
-	//handle
 }
 function process_post(par)
 {
 	//
 	switch(par.postBody.action)
 	{
-    case "login":
-      /*
-      var CryptoJS = require("crypto-js");
-
-      var data = [{id: 1}, {id: 2}]
-
-      // Encrypt
-      var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data), 'secret key 123').toString();
-
-      // Decrypt
-      var bytes  = CryptoJS.AES.decrypt(ciphertext, 'secret key 123');
-      var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-
-      console.log(decryptedData); // [{id: 1}, {id: 2}]
-      */
-      if(tg.user_array[par.postBody.username]!=undefined)
-      {
-
-        tg.sendkey_to_chat(par.postBody.username);
-        par.ResContent={
-          content:{
-            result:"success",
-            content:"hi",
-            action:par.postBody.action
-          },
-          status_code:200
-        };
-      }
-      else
-      {
-        par.ResContent={
-          content:{
-            result:"failed",
-            content:"username not register",
-            action:par.postBody.action
-          },
-          status_code:200
-        };
-      }
-      
-      api_res_end(par);
-    break;
+    
     case "addrecord":
       //
       
@@ -193,23 +109,10 @@ function process_post(par)
           },
           status_code:200
         };
-        api_res_end(par);
+        api_res_end(par,true);
       });
     break;
-    case "readrecord":
-      db_action.read_record((result)=>{
-        // console.log(result.map(item=>item['json_data']));
-        par.ResContent={
-          content:{
-            result:result.map(item=>item['json_data']),
-            content:`${result.length} Row affected`,
-            action:par.postBody.action
-          },
-          status_code:200
-        };
-        api_res_end(par);
-      })
-    break;
+
 		default:
 			console.log("unhandle post-"+par.Request.url);
 
@@ -317,7 +220,8 @@ function api_res_end(par,ifcipher=false)
   }
   if(ifcipher)
   {
-    var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(content), config.keys["test"]).toString();
+    console.log(par['password'])
+    var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(content), par['password']).toString();
   
     par.Respond.end(ciphertext);
   }

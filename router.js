@@ -3,6 +3,7 @@ const public_file_access =  require('./public_file_access.js');
 
 const fs = require('fs');
 var util = require('util');
+const { handle_GET } = require('./handling_get.js');
 
 function debug_to_file(content)
 {
@@ -53,7 +54,6 @@ function OnRequest(req,res)
 	try {
 		switch(req.method)
 		{
-      
 			case "OPTIONS":
 				//如果是带有session并是options就直接返回 
 				par_.status_code=200;
@@ -73,11 +73,11 @@ function OnRequest(req,res)
 				switch(url_parts)
 				{
 					case (url_parts.match( /(?:js|css|img|png|webfont|ttf|svg|woff|html|htm|woff2)$/) || {}).input: case "/favicon.ico":
-						
 						public_file_access.ReadStaticFile(url_parts,par_);
 					break;
-					case (url_parts.match(/^\/api/) || {}).input:
-						//session.VaildateSession( par_);
+					case (url_parts.match(/^\/api\//) || {}).input:
+						//handling get, must contains "/api/" within url
+            handle_GET(par_);
 					break;
 					case "/bb":
 						public_file_access.ReadStaticFile("/hz.html",par_);
