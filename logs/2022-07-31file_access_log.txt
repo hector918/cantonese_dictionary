@@ -334,3 +334,6 @@
 20:40:39'RF127.0.0.1:80[1ms]/components/search_page.js'
 20:40:39'RF127.0.0.1:80[0ms]/js/general.js'
 20:40:40'RF127.0.0.1:80[0ms]/favicon.ico'
+21:58:28'RF127.0.0.1:80[2ms]/index.html'
+21:58:28'RF127.0.0.1:80[0ms]/components/search_page.js'
+21:58:28'RF127.0.0.1:80[0ms]/js/general.js'

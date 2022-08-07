@@ -1,4 +1,4 @@
-import {cej,appendCSS,getElBy,raw_post} from '../js/general.js';
+import {cej,appendCSS,getElBy,raw_post, raw_get} from '../js/general.js';
 
 function raw_post_c (json_data,path,callback)
 {
@@ -38,8 +38,36 @@ function reset_password(){
 }
 
 class input_page {
+  on_search_input_keyup(evt){
+    switch(evt.code)
+    {
+      case "Enter":
+        let inVal = evt.target.value;
+        raw_get(`api/v1/readrecord?search=${inVal}`,(rsp)=>{
+          try {
+            let rst = JSON.parse(rsp)['result'];
+            rst.forEach(el=>this.create_card(el,this));
+          } catch (error) {
+            
+          }
+        })
+      break;
+      default:
+
+    }
+  }
   on_reset_password_click(){
     reset_password();
+  }
+  on_close_card_click(evt)
+  {
+    //
+    let column = this['self'];
+    column.parentNode.removeChild(column);
+  }
+  set_db_index(index){
+    console.log(index)
+    if(index!==false) this.dbId = index;
   }
   set_card_state(text,state="normal")
   {
@@ -79,7 +107,7 @@ class input_page {
   {
     let uploadData = {
       username : "hector",
-      data : {},
+      data : {dbId:this.dbId},
       action:"addrecord",
     };
     let inputs = getElBy(this.fakehost['cardbody'].self,"input");
@@ -92,7 +120,7 @@ class input_page {
     uploadData.data['tags']={};
     for(let x of tags)
     {
-      uploadData.data['tags'][x.innerHTML]=x.innerHTML;
+      uploadData.data['tags'][x.innerHTML] = x.innerHTML;
     }
     
     raw_post_c(uploadData,"api/v1",(rst)=>{
@@ -102,6 +130,14 @@ class input_page {
       }
       else
       {
+        try {
+          let {master_insertId} = JSON.parse(rst['result']);
+          this.set_db_index(master_insertId);
+          
+        } catch (error) {
+          this.set_card_state("json error","error");
+        }
+        
         this.set_card_state(rst['content'],"success");
         let timer = setTimeout(() => {
           clearTimeout(timer);
@@ -150,29 +186,10 @@ class input_page {
     let tag = evt.target.parentNode;
     tag.parentNode.removeChild(tag)
   }
-  on_verification_click(evt)
-  {
-    // try {
-    //   let source_string = this['usernameinput'].value + this['passwordinput'].value;
-    //   let hash = CryptoJS.SHA3(source_string);
-    //   page_var.hashkey = hash;
-
-    //   let form = {action : "verification"};
-
-    //   //var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(form), 'secret key 123').toString();
-
-    //   raw_post(form,"/api/v1/");
-    // } catch (error) {
-    //   console.log(error)
-    // }
-
-    // this['on_verification_button'].addEventListener("click",this.on_verification_click);
-      
-  }
   create_card(json,input_page_obj){
     let fakehost = {};
     //create the el on fakehost, to pass the card obj to save button
-    let singleCard = cej(input_page_obj['singleCardStructure'](),fakehost);
+    let singleCard = cej(input_page_obj['singleCardStructure'](json),fakehost);
 
     fakehost['cardbody']=singleCard;
     input_page_obj['cardContainer'].insertBefore(singleCard.self,input_page_obj['cardContainer'].childNodes[1]);
@@ -183,6 +200,9 @@ class input_page {
     fakehost['tagbox_add_button'].addEventListener("click",input_page_obj.tagBox_on_click.bind(fakehost),true);
     fakehost['tagbox_add_button'].addEventListener("blur",input_page_obj.tagBox_on_blur.bind(fakehost),true);
     fakehost['tagbox_add_button'].addEventListener("keyup",input_page_obj.tagsbox_on_keypress.bind(this),true);
+    fakehost['card_delete_button'].addEventListener("click",this.on_close_card_click.bind(singleCard));
+
+
     this['fakehost']=fakehost;
     return singleCard;
 
@@ -212,7 +232,7 @@ class input_page {
   }
   structure() {
   
-    let inputField =(label)=>{
+    let inputField =(label,value="")=>{
       return {
         class:"field",
         childrens_:[
@@ -227,6 +247,7 @@ class input_page {
               class:"input is-medium",
               type:"text",
               name:label,
+              value,
             }]
           }
         ]
@@ -239,7 +260,11 @@ class input_page {
     ];
     appendCSS(singlecardCSS.join(";"));
 
-    let singleCard = ()=>{
+    let singleCard = (preData={})=>{
+      if(Object.keys(preData)===0)
+      {
+
+      }
       return {
         class:"column",
         childrens_:
@@ -255,12 +280,19 @@ class input_page {
                   class:"card-header-title",
                   style:"justify-content: space-between;",
                   innerHTML_:"Add record",
-                  childrens_:[{
+                  childrens_:[
+                    {
                     tagname_:"span",
                     class:"block",
                     innerHTML_:"state text",
                     export_:"state_text_box",
-                  }]
+                    },
+                    {
+                      tagname_:"button",
+                      class:"delete is-large",
+                      export_:"card_delete_button",
+                    }
+                  ]
                 },
                 
               ]
@@ -270,11 +302,11 @@ class input_page {
               childrens_:[{
                 class:"content",
                 childrens_:[
-                  inputField("english"),
-                  inputField("chinese"),
-                  inputField("phonics"),
-                  inputField("chinese sentence example"),
-                  inputField("english sentence example"),
+                  inputField("english",preData["english"]||""),
+                  inputField("chinese",preData["chinese"]||""),
+                  inputField("phonics",preData["phonics"]||""),
+                  inputField("chinese sentence example",preData["chinese sentence example"]||""),
+                  inputField("english sentence example",preData["english sentence example"]||""),
                   {
                     class:"columns",
                     childrens_:[
@@ -318,11 +350,11 @@ class input_page {
                   innerHTML_:"save",
                   export_:"saveButton",
                 },
-                {
-                  tagname_:"a",
-                  class:"card-footer-item",
-                  innerHTML_:"edit",
-                },
+                // {
+                //   tagname_:"a",
+                //   class:"card-footer-item",
+                //   innerHTML_:"edit",
+                // },
                 {
                   tagname_:"a",
                   class:"card-footer-item",
@@ -344,30 +376,43 @@ class input_page {
         [{
           class:"card hover-hack-singlecard function-card-centered",
           style:"display: flex;justify-content: center;align-items: center; height: 100%;",
-          event_:{"click":this.on_add_card_click.bind(this)},
+          
           childrens_:
           [{
             class:"card-content",
             childrens_:
-            [{
-              class:"content",
-              childrens_:
-              [{
-                tagname_:"button",
-                style:"border:none;",
-                class:"button is-large",
+            [
+              {
+                class:"content",
+                childrens_:[
+                  {
+                    tagname_:"input",
+                  },
+                ],
+                event_:{"keyup":this.on_search_input_keyup.bind(this)},
+              },
+              {
+                class:"content",
+                event_:{"click":this.on_add_card_click.bind(this)},
+                style:"text-align:center;",
                 childrens_:
                 [{
-                  tagname_:"span",
-                  class:"icon is-medium",
+                  tagname_:"button",
+                  style:"border:none;",
+                  class:"button is-large",
                   childrens_:
                   [{
-                    tagname_:"i",
-                    class:"fa fa-plus fa-2x"
+                    tagname_:"span",
+                    class:"icon is-medium",
+                    childrens_:
+                    [{
+                      tagname_:"i",
+                      class:"fa fa-plus fa-2x"
+                    }]
                   }]
                 }]
-              }]
-            }]
+              }
+            ]
           }]
         }]
       }

@@ -63,9 +63,39 @@ async function add_record(data,callback)
     tags:JSON.stringify(data.data['tags']),
     json_data:JSON.stringify(data.data),
   };
-  let master_feedback = await promise_mysql_pool.insert([masterPreparingData],"cantonese_dictionary_master_data");
+  let master_feedback = null;
 
-  callback(skido(steps_feedback,"affectedRows"),skido(master_feedback,"affectedRows"));
+  if(typeof data['data']["dbId"]!=="number")
+  {
+    //insert
+    master_feedback = await promise_mysql_pool.insert([masterPreparingData],"cantonese_dictionary_master_data");
+  }
+  else
+  {
+    //update
+    master_feedback = await promise_mysql_pool.update(masterPreparingData,"cantonese_dictionary_master_data",`\`index\`="${data['data']["dbId"]}"`);
+  }
+  
+  /* example of master feedback
+    [
+      ResultSetHeader {
+        fieldCount: 0,
+        affectedRows: 1,
+        insertId: 15,
+        info: '',
+        serverStatus: 2,
+        warningStatus: 0
+      },
+      undefined
+    ]
+  */
+  let rst = { 
+    steps_affectedRows:skido(steps_feedback,"affectedRows"),
+    master_affectedRows:skido(master_feedback,"affectedRows"),
+    master_insertId:skido(master_feedback,"insertId"),
+  }
+
+  callback(rst);
 
 }
 

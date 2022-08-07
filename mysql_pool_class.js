@@ -22,17 +22,11 @@ function search_key_in_deep_obj(obj,keyname)
 {
   for(let x in obj)
   {
-    if(x===keyname)
-    {
-      return obj[x];
-    }
+    if(x===keyname) return obj[x];
     if(typeof obj[x]==="object")
     {
       let rst = search_key_in_deep_obj(obj[x],keyname);
-      if(rst!=false)
-      {
-        return rst 
-      }
+      if(rst!=false) return rst ;
     }
   }
   return false;
@@ -65,20 +59,29 @@ promise_mysql_pool.list_field = async function (table)
     return false;
   }
 }
+promise_mysql_pool.update = async function(json,table,where){
+  if(Object.keys(json).length===0) return false;
 
+  let val_arr=[];
+  for(let x in json) val_arr.push(`\`${x}\`='${json[x]}'`);
+
+  let sql = `UPDATE ${table} SET ${val_arr.join(",")} where ${where};`;
+
+  let result;
+  try {
+    result = await this.query(sql);
+    return result;
+  } catch (error) {
+    console.log("mysql update error",result,sql,error);
+    mysql_log(error.toString());
+    return false
+  }
+  //let field_arr = arr[0].filter(el)
+}
 promise_mysql_pool.insert = async function(arr,table){
-  if(arr.length===0)
-  {
-    return false;
-  }
-
+  if(arr.length===0) return false;
   var fields = await this.list_field(table);
-
-  if(!fields)
-  {
-    return false;
-  }
-
+  if(!fields) return false;
   //生成field name
   let fields_arr =[]; 
   for(let y in arr[0])
@@ -110,11 +113,14 @@ promise_mysql_pool.insert = async function(arr,table){
     result = await this.query(sql);
     return result;
   } catch (error) {
-    console.log(result,sql);
+    console.log("mysql insert error",result,sql,error);
     mysql_log(error.toString());
     return []
   }
   
+}
+mysql_pool.delete = async function(where,table){
+  //
 }
 mysql_pool.get_all = async function(sql,callback){
   //mysql_log()

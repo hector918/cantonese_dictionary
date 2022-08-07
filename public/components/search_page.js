@@ -19,7 +19,7 @@ class search_page {
   }
   on_input_box_keyup(evt)
   {
-    this.time_intervel=0;
+    this.time_intervel = 0;
   }
 
   create_one_tile(json)

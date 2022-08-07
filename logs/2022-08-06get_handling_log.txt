@@ -1,0 +1,31 @@
+23:01:50'GET 500 ws=undefined 127.0.0.1 [55ms] /api/v1/readrecord?search=abc'
+23:01:50[
+  { func_name: 'onrequest', time_record: 0.0000015830009942874312 },
+  { uptime: '53ms', path: 'process_error_and_response' }
+]
+23:03:02'GET 200 ws=undefined 127.0.0.1 [218ms] /api/v1/readrecord?search=abc'
+23:03:02[ { func_name: 'onrequest', time_record: 0.0000018749997252598405 } ]
+23:06:07'GET 200 ws=undefined 127.0.0.1 [53ms] /api/v1/readrecord?search=ba'
+23:06:07[ { func_name: 'onrequest', time_record: 0.000011833000000294192 } ]
+23:09:00'GET 200 ws=undefined 127.0.0.1 [41ms] /api/v1/readrecord?search=bc'
+23:09:00[ { func_name: 'onrequest', time_record: 0.000008041999999264249 } ]
+23:10:57'GET 200 ws=undefined 127.0.0.1 [78ms] /api/v1/readrecord?search=bc'
+23:10:57[ { func_name: 'onrequest', time_record: 0.000020499999999756824 } ]
+23:40:14'GET 200 ws=undefined 127.0.0.1 [35ms] /api/v1/readrecord?search='
+23:40:14[ { func_name: 'onrequest', time_record: 0.00000591699995311501 } ]
+23:41:04'GET 200 ws=undefined 127.0.0.1 [40ms] /api/v1/readrecord?search='
+23:41:04[ { func_name: 'onrequest', time_record: 0.000008167000032699434 } ]
+23:44:12'GET 200 ws=undefined 127.0.0.1 [40ms] /api/v1/readrecord?search=d'
+23:44:12[ { func_name: 'onrequest', time_record: 0.000016291000065393746 } ]
+23:45:15'GET 200 ws=undefined 127.0.0.1 [44ms] /api/v1/readrecord?search='
+23:45:15[ { func_name: 'onrequest', time_record: 0.000001708000127109699 } ]
+23:45:45'GET 200 ws=undefined 127.0.0.1 [31ms] /api/v1/readrecord?search=f'
+23:45:45[ { func_name: 'onrequest', time_record: 0.0000023329998839471955 } ]
+23:48:08'GET 200 ws=undefined 127.0.0.1 [37ms] /api/v1/readrecord?search=sd'
+23:48:08[ { func_name: 'onrequest', time_record: 0.0000017090001165342983 } ]
+23:48:14'GET 200 ws=undefined 127.0.0.1 [36ms] /api/v1/readrecord?search=sd'
+23:48:14[ { func_name: 'onrequest', time_record: 0.000008582999726058915 } ]
+23:50:33'GET 200 ws=undefined 127.0.0.1 [42ms] /api/v1/readrecord?search=dd'
+23:50:33[ { func_name: 'onrequest', time_record: 0.000003249999735999154 } ]
+23:51:58'GET 200 ws=undefined 127.0.0.1 [43ms] /api/v1/readrecord?search=d'
+23:51:58[ { func_name: 'onrequest', time_record: 0.000001791999693523394 } ]

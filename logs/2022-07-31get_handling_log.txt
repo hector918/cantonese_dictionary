@@ -38,3 +38,5 @@
 04:54:15[ { func_name: 'onrequest', time_record: 0.0000019999999949504854 } ]
 20:40:39'GET 200 ws=undefined 127.0.0.1 [40ms] /api/v1/readrecord'
 20:40:39[ { func_name: 'onrequest', time_record: 0.000005791000000199276 } ]
+21:58:28'GET 200 ws=undefined 127.0.0.1 [49ms] /api/v1/readrecord'
+21:58:28[ { func_name: 'onrequest', time_record: 0.0000034159999999783253 } ]

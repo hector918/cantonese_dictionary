@@ -46,7 +46,9 @@ async function process_get(par)
     questionMarkIndex = par.Request.url.length;
   }
   let prefix = par.Request.url.slice(0,questionMarkIndex).toLowerCase();
-  let url_parameter = par.Request.url.slice(questionMarkIndex+1).split("&");
+  let url_parameter = par.Request.url.slice(questionMarkIndex+1).split("&").map(el=>el.split("="));
+  
+  console.log("get par:",url_parameter);
 
 	switch(prefix)
   {

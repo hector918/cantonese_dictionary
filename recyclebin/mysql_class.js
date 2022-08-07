@@ -236,21 +236,22 @@ mysql_c {
   {
     return await this.mysql_affected_rows();
   }
-  async insert(arr,table)
-  {
-    
-    if(arr.length===0)
-    {
-      return false;
-    }
-    
+  async update(arr,table,where){
+    if(arr.length===0) return false;
     await this.connection_state_check();
 
     var fields = await this.list_field(table);
-    if(!fields)
-    {
-      return false;
-    }
+    if(!fields) return false;
+    console.log(arr)
+    //let field_arr = arr[0].filter(el)
+  }
+  async insert(arr,table)
+  {
+    if(arr.length===0) return false;
+    await this.connection_state_check();
+
+    var fields = await this.list_field(table);
+    if(!fields) return false;
 
     //生成field name
     let fields_arr =[]; 

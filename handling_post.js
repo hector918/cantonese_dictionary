@@ -103,11 +103,11 @@ function process_post(par)
       db_action.add_record(par.postBody,(result)=>{
         par.ResContent={
           content:{
-            result:result,
-            content:`${result} Row affected`,
-            action:par.postBody.action
+            result:JSON.stringify(result),
+            content:`${result['master_affectedRows']} Row affected`,
+            action:par.postBody.action,
           },
-          status_code:200
+          status_code:200,
         };
         api_res_end(par,true);
       });
