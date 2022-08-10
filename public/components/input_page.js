@@ -2,6 +2,7 @@ import {cej,appendCSS,getElBy,raw_post, raw_get} from '../js/general.js';
 
 function raw_post_c (json_data,path,callback)
 {
+  
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -25,11 +26,16 @@ function raw_post_c (json_data,path,callback)
   {
     
   }
-
   let ciphertext = CryptoJS.AES.encrypt(JSON.stringify(json_data), page_var['hashkey']).toString();
 
-  xhttp.open("POST", path );
-  xhttp.send(`{"at":"${ciphertext}","username":"${page_var['username']}"}`);
+  
+  try {
+    xhttp.open("POST", path );
+    xhttp.send(`{"at":"${ciphertext}","username":"${page_var['username']}"}`);
+    
+  } catch (error) {
+    callback({"errors":error.toString()});
+  }
   
 }
 
@@ -45,15 +51,39 @@ class input_page {
         let inVal = evt.target.value;
         raw_get(`api/v1/readrecord?search=${inVal}`,(rsp)=>{
           try {
-            let rst = JSON.parse(rsp)['result'];
-            rst.forEach(el=>this.create_card(el,this));
+            let rst = JSON.parse(rsp);
+
+            rst['result'].forEach(el=>this.create_card(el,this));
+
+            let msg_board= this['search_box_message_board'];
+            msg_board.innerHTML = rst.content;
+            msg_board.parentNode.classList.remove("is-hidden");
+            //clear the not trigger timer;
+            clearTimeout(this['messagebox_timer_handler']);
+
+            let timerHandle = setTimeout(()=>{
+              msg_board.parentNode.classList.add("is-hidden");
+              clearTimeout(timerHandle);
+            },5000);
+            this['messagebox_timer_handler']=timerHandle;
           } catch (error) {
-            
+            console.log(error)
           }
         })
       break;
       default:
 
+    }
+  }
+  on_search_box_focus(evt){
+    evt.target.select();
+  }
+  on_clear_all_cards_click(evt){
+    //
+    let cards = this['cardContainer'].childNodes;
+    for(let x = Object.keys(cards).length-1; x >= 1; x-- )
+    {
+      cards[x].parentNode.removeChild(cards[x]);
     }
   }
   on_reset_password_click(){
@@ -66,13 +96,13 @@ class input_page {
     column.parentNode.removeChild(column);
   }
   set_db_index(index){
-    console.log(index)
     if(index!==false) this.dbId = index;
   }
   set_card_state(text,state="normal")
   {
-    let card = this.fakehost.cardbody.self.firstChild;
-    let state_text = this.fakehost.state_text_box;
+ 
+    let card = this.cardbody.self.firstChild;
+    let state_text = this.state_text_box;
 
     state_text.classList.remove("has-text-warning");
     state_text.classList.remove("has-text-success");
@@ -103,26 +133,51 @@ class input_page {
 
     }
   }
+  on_delete_record_click(evt){
+    //
+    let uploadData = {
+      username : "hector",
+      data : {dbId:this.dbId},
+      action:"deleterecord",
+    };
+
+    raw_post_c(uploadData,"api/v1",(rst)=>{
+      if(rst['errors']!=undefined)
+      {
+        this.set_card_state(rst['errors'],"error");
+      }
+      else
+      {
+        try {
+          this.cardbody.self.parentNode.removeChild(this.cardbody.self);
+        } catch (error) {
+          this.set_card_state("json error","error");
+        }
+       
+      }
+    });
+  }
   on_save_click(evt)
   {
     let uploadData = {
       username : "hector",
       data : {dbId:this.dbId},
-      action:"addrecord",
+      action:this.dbId?"updaterecord" :"addrecord",
     };
-    let inputs = getElBy(this.fakehost['cardbody'].self,"input");
+
+    let inputs = getElBy(this['cardbody'].self,"input");
     for(let x of inputs)
     {
       if (x['name']!=="") uploadData.data[x['name']]=x.value;
     }
 
-    let tags = getElBy(this.fakehost['tagsbox'],"div");
+    let tags = getElBy(this['tagsbox'],"div");
     uploadData.data['tags']={};
     for(let x of tags)
     {
       uploadData.data['tags'][x.innerHTML] = x.innerHTML;
     }
-    
+
     raw_post_c(uploadData,"api/v1",(rst)=>{
       if(rst['errors']!=undefined)
       {
@@ -132,6 +187,7 @@ class input_page {
       {
         try {
           let {master_insertId} = JSON.parse(rst['result']);
+          
           this.set_db_index(master_insertId);
           
         } catch (error) {
@@ -158,6 +214,7 @@ class input_page {
     //
     evt.target.setAttribute("type","input");
     evt.target.value = "";
+
   }
   
   tagsbox_on_keypress(evt)
@@ -175,11 +232,12 @@ class input_page {
   }
   tagsbox_add_tag(text)
   {
-    let exist_tags = getElBy(this['fakehost']['tagsbox'],"div");
+    let exist_tags = getElBy(this['tagsbox'],"div");
+    //no allow double
     if(exist_tags.find(x=>x.innerHTML===text)!==undefined) return;
     
     let tag = cej(this.tag(text),{});
-    this['fakehost']['tagsbox'].appendChild(tag.self);
+    this['tagsbox'].appendChild(tag.self);
   }
   tagsbox_tag_remove_button_click(evt)
   {
@@ -189,20 +247,32 @@ class input_page {
   create_card(json,input_page_obj){
     let fakehost = {};
     //create the el on fakehost, to pass the card obj to save button
-    let singleCard = cej(input_page_obj['singleCardStructure'](json),fakehost);
+    let singleCard = cej(input_page_obj.singleCardStructure(json),fakehost);
 
     fakehost['cardbody']=singleCard;
     input_page_obj['cardContainer'].insertBefore(singleCard.self,input_page_obj['cardContainer'].childNodes[1]);
     
-    //bind the save button with the card
-    fakehost['saveButton'].addEventListener("click",input_page_obj.on_save_click.bind(this),true);
+    //bind the save and delete button with the card
+    fakehost['saveButton'].addEventListener("click",input_page_obj.on_save_click.bind(fakehost),true);
+    fakehost['deleteRecordButton'].addEventListener("click",input_page_obj.on_delete_record_click.bind(fakehost),true);
+    
     //tagsbox event
     fakehost['tagbox_add_button'].addEventListener("click",input_page_obj.tagBox_on_click.bind(fakehost),true);
     fakehost['tagbox_add_button'].addEventListener("blur",input_page_obj.tagBox_on_blur.bind(fakehost),true);
-    fakehost['tagbox_add_button'].addEventListener("keyup",input_page_obj.tagsbox_on_keypress.bind(this),true);
+    fakehost['tagbox_add_button'].addEventListener("keyup",input_page_obj.tagsbox_on_keypress.bind(fakehost),true);
     fakehost['card_delete_button'].addEventListener("click",this.on_close_card_click.bind(singleCard));
+    fakehost.set_card_state=this.set_card_state.bind(fakehost);
+    fakehost.tagsbox_add_tag = this.tagsbox_add_tag.bind(fakehost);
+    fakehost.tag = this.tag.bind(fakehost);
 
-
+    if(json&&json.tags) for(let x in json['tags'])
+    {
+      fakehost.tagsbox.appendChild(cej(this.tag(x),{}).self);
+    }
+    
+    
+    fakehost['dbId']=json['dbId']||undefined;
+    
     this['fakehost']=fakehost;
     return singleCard;
 
@@ -266,7 +336,7 @@ class input_page {
 
       }
       return {
-        class:"column",
+        class:"column is-one-third",
         childrens_:
         [{
           class:"card hover-hack-singlecard",
@@ -284,7 +354,7 @@ class input_page {
                     {
                     tagname_:"span",
                     class:"block",
-                    innerHTML_:"state text",
+                    innerHTML_:"",
                     export_:"state_text_box",
                     },
                     {
@@ -308,7 +378,7 @@ class input_page {
                   inputField("chinese sentence example",preData["chinese sentence example"]||""),
                   inputField("english sentence example",preData["english sentence example"]||""),
                   {
-                    class:"columns",
+                    class:"columns is-multiline",
                     childrens_:[
                       {
                         class:"column is-narrow",
@@ -358,7 +428,8 @@ class input_page {
                 {
                   tagname_:"a",
                   class:"card-footer-item",
-                  innerHTML_:"delete",
+                  innerHTML_:"delete record",
+                  export_:"deleteRecordButton",
                 },
                 
               ]
@@ -367,7 +438,7 @@ class input_page {
         }]
       }
     }
-    this['singleCardStructure']=singleCard;
+    this.singleCardStructure=singleCard;
 
     let functionCard = ()=>{
       return {
@@ -386,7 +457,22 @@ class input_page {
                 class:"content",
                 childrens_:[
                   {
+                   tagname_:"article",
+                   class:"message is-hidden",
+                   childrens_:[{
+                    class:"message-body",
+                    export_:"search_box_message_board",
+                   }]
+                  },
+                  {
+                    tagname_:"label",
+                    class:"label",
+                    innerHTML_:"press enter in the search box to search.",
+                  },
+                  {
                     tagname_:"input",
+                    class:"input",
+                    event_:{"focus":this.on_search_box_focus},
                   },
                 ],
                 event_:{"keyup":this.on_search_input_keyup.bind(this)},
@@ -411,7 +497,17 @@ class input_page {
                     }]
                   }]
                 }]
-              }
+              },
+              {
+                class:"content",
+                style:"text-align:center;",
+                childrens_:[{
+                  tagname_:"button",
+                  class:"button is-danger is-light",
+                  innerHTML_:"clear all cards",
+                  event_:{"click":this.on_clear_all_cards_click.bind(this)},
+                }]
+              },
             ]
           }]
         }]

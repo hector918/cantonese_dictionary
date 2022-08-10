@@ -52,10 +52,13 @@ async function add_record(data,callback)
 
   let stepPreparingData ={
     user: data.username,
-    action : "add_record",
+    action : data['action']||undefined,
     content : JSON.stringify(data.data),
   }
   let steps_feedback = await promise_mysql_pool.insert([stepPreparingData],"cantonese_dictionary_steps_data");
+
+  let recordIndex = data['data']["dbId"];
+  delete data['data']["dbId"];
 
   let masterPreparingData = {
     english:data.data['english'],
@@ -65,7 +68,7 @@ async function add_record(data,callback)
   };
   let master_feedback = null;
 
-  if(typeof data['data']["dbId"]!=="number")
+  if(typeof recordIndex!=="number")
   {
     //insert
     master_feedback = await promise_mysql_pool.insert([masterPreparingData],"cantonese_dictionary_master_data");
@@ -73,7 +76,8 @@ async function add_record(data,callback)
   else
   {
     //update
-    master_feedback = await promise_mysql_pool.update(masterPreparingData,"cantonese_dictionary_master_data",`\`index\`="${data['data']["dbId"]}"`);
+    
+    master_feedback = await promise_mysql_pool.update(masterPreparingData,"cantonese_dictionary_master_data",`\`index\`="${recordIndex}"`);
   }
   
   /* example of master feedback
@@ -109,13 +113,92 @@ async function read_user_keypair(name)
 async function read_record(cb)
 {
   // let lastest = 'SELECT * FROM `cantonese_dictionary_master_data` ORDER BY timestamp DESC LIMIT 10';
-  let sql = `select * from \`cantonese_dictionary_master_data\` where 1`;
-  mysql_obj.get_all(sql,cb);
+  let sql = `select * from \`cantonese_dictionary_master_data\` where \`deleted\`=0`;
+
+  mysql_obj.get_all(sql,(error,result,field)=>{
+
+    if(error)
+    {
+      handle_error(error);
+      cb(error,result,field);
+      return;
+    }
+    result = result.map(el=>{
+      el['json_data']['dbId']=el['index'];
+      return el['json_data'];
+    });
+
+    cb(error,result,field);
+  });
+}
+async function delete_record(data,cb)
+{
+  //
+  /* data example
+  {
+    username: 'hector',
+    data: {
+      dbId: 35,
+      english: '111h222',
+      chinese: '333344',
+      phonics: '5354',
+      'chinese sentence example': 'llll',
+      'english sentence example': '',
+      tags: { test: 'test', hector: 'hector' }
+    },
+    action: 'addrecord',
+    random: 0.09290560557099958
+  } 
+  */
+ try {
+  let stepPreparingData ={
+    user: data.username,
+    action : data.action,
+    content : JSON.stringify(data.data),
+  }
+  let steps_feedback = await promise_mysql_pool.insert([stepPreparingData],"cantonese_dictionary_steps_data");
+
+  let recordIndex = data['data']["dbId"];
+  delete data['data']["dbId"];
+
+
+  let masterPreparingData = {
+    json_data:JSON.stringify(data.data),
+    deleted:1,
+  };
+  let master_feedback = await promise_mysql_pool.update(masterPreparingData,"cantonese_dictionary_master_data",`\`index\`="${recordIndex}"`);
+  
+  /* master_feedback example
+  [
+    ResultSetHeader {
+      fieldCount: 0,
+      affectedRows: 1,
+      insertId: 0,
+      info: 'Rows matched: 1  Changed: 1  Warnings: 0',
+      serverStatus: 2,
+      warningStatus: 0,
+      changedRows: 1
+    },
+    undefined
+  ]
+  */
+  let rst = { 
+    steps_affectedRows:skido(steps_feedback,"affectedRows"),
+    master_affectedRows:skido(master_feedback,"affectedRows"),
+    master_insertId:recordIndex,
+  }
+  console.log(master_feedback);
+  cb(rst);
+ } catch (error) {
+  cb({"error":error.toString()});
+ }
+  
 }
 ///////////////////////////////////////////////////////////////
 module.exports = { 
   add_record,
   read_record,
+  delete_record,
   handle_error,
   read_user_keypair,
 };
