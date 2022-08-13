@@ -48,8 +48,8 @@ class input_page {
     switch(evt.code)
     {
       case "Enter":
-        let inVal = evt.target.value;
-        raw_get(`api/v1/readrecord?search=${inVal}`,(rsp)=>{
+        let inVal = btoa(encodeURIComponent(evt.target.value));
+        raw_get(`api/v1/readrecord?text=${inVal}`,(rsp)=>{
           try {
             let rst = JSON.parse(rsp);
 
@@ -95,9 +95,7 @@ class input_page {
     let column = this['self'];
     column.parentNode.removeChild(column);
   }
-  set_db_index(index){
-    if(index!==false) this.dbId = index;
-  }
+  
   set_card_state(text,state="normal")
   {
  
@@ -164,7 +162,6 @@ class input_page {
       data : {dbId:this.dbId},
       action:this.dbId?"updaterecord" :"addrecord",
     };
-
     let inputs = getElBy(this['cardbody'].self,"input");
     for(let x of inputs)
     {
@@ -186,19 +183,18 @@ class input_page {
       else
       {
         try {
+
           let {master_insertId} = JSON.parse(rst['result']);
-          
-          this.set_db_index(master_insertId);
-          
+          this.dbId = master_insertId;
+          this.set_card_state(rst['content'],"success");
+          let timer = setTimeout(() => {
+            clearTimeout(timer);
+            this.set_card_state("");
+          }, 10000);
         } catch (error) {
-          this.set_card_state("json error","error");
+          console.log(error);
+          this.set_card_state("response:"+error.toString(),"error");
         }
-        
-        this.set_card_state(rst['content'],"success");
-        let timer = setTimeout(() => {
-          clearTimeout(timer);
-          this.set_card_state("");
-        }, 10000);
       }
     });
     this.set_card_state("","working");
@@ -387,7 +383,7 @@ class input_page {
                           class:"input is-rounded",
                           tagname_:"input",
                           type:"submit",
-                          value:"Add",
+                          value:"Add tags",
                           innerHTML_:"test",
                           placeholder:"press enter to confirm."
                         },

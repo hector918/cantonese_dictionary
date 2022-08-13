@@ -1,6 +1,8 @@
 const fs = require('fs'); const util = require('util');
 // const CryptoJS = require("crypto-js");
 const db_action = require('./db_action.js');
+const search_js = require('./search_and_cache.js');
+
 const config = require('./config.js');
 function debug_to_file(content) {
   let d = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '').split(" ");
@@ -39,13 +41,17 @@ async function process_get(par) {
     questionMarkIndex = par.Request.url.length;
   }
   let prefix = par.Request.url.slice(0, questionMarkIndex).toLowerCase();
-  let url_parameter = par.Request.url.slice(questionMarkIndex + 1).split("&").map(el => el.split("="));
 
-  console.log("get par:", url_parameter);
-
+  
   switch (prefix) {
     case "/api/v1/readrecord":
-      db_action.read_record((error, result, field) => {
+      //perform base64 decode
+      let url_parameter = par.Request.url.slice(questionMarkIndex + 1 + ("text=".length));
+
+      url_parameter = decodeURIComponent(Buffer.from(url_parameter,"base64")).toString();
+
+      
+      search_js.search(url_parameter,(error, result, field) => {
 
         if (error != undefined) {
           db_action.handle_error(error);
@@ -63,6 +69,9 @@ async function process_get(par) {
           },
           status_code: 200
         };
+
+        if (config.debug) console.log(`${Math.round((process.uptime()-par.on_request_time)*1000)}ms Get ${prefix}: ${url_parameter}`);
+        //send out response        
         api_res_end(par);
       })
       break;

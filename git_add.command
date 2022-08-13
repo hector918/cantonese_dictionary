@@ -1,3 +1,3 @@
 git add .
-git reset -- /log
+git reset -- logs/*
 git reset -- config.js

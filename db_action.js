@@ -1,4 +1,9 @@
 const {mysql_obj,promise_mysql_pool,search_key_in_deep_obj:skido} = require('./mysql_pool_class.js');
+function trim(text)
+{
+  let regex = /^\s*|\s*$/g;
+  return text.replace(regex,"");
+}
 // const {mysql_obj_not_sync} = require('./mysql_class_not_sync.js');
 //====================================================================
 function handle_error(error)
@@ -110,13 +115,53 @@ async function read_user_keypair(name)
 }
 
 
-async function read_record(cb)
-{
-  // let lastest = 'SELECT * FROM `cantonese_dictionary_master_data` ORDER BY timestamp DESC LIMIT 10';
-  let sql = `select * from \`cantonese_dictionary_master_data\` where \`deleted\`=0`;
+async function read_record(search_obj,cb)
+{  
+  //keyword not empty======================================
+  let k_where = "";
+  if(search_obj['keyword']) 
+  {
+    let [chn_where,eng_where] = [[],[]];
+    let chn_regex = /[\u4e00-\u9fa5]/;
+    for(let x of search_obj['keyword']){
+      if(chn_regex.test(x))
+      {//chn
+        chn_where.push(`"${x}"`);
+      }
+      else
+      {//eng
+        eng_where.push(`"${x}"`);
+      }
+    }
+    if(chn_where.length>0) k_where+=` \`chinese\` IN (${chn_where.join(",")})`;
+    if(eng_where.length>0) k_where+=` ${chn_where.length>0?" OR ":""} \`english\` IN (${eng_where.join(",")})`;
+    if(k_where!=="") k_where=" and ("+ k_where + ")";
+  }
+  //keyword not empty======================================
+  
+  //tags not empty========================================
+  ///select * from `cantonese_dictionary_master_data` where `deleted`=0  and JSON_SEARCH(`tags`,'one','test');
+  let t_where = "";
+  if(search_obj['tags']){
+    let tags_arr = [];
+    search_obj['tags'].forEach(el=>{
+      tags_arr.push(`JSON_SEARCH(\`tags\`,'one','${el}')`);
+    })
+    if(tags_arr.length>0) t_where=` (${tags_arr.join(" or ")})`;
+  }
+  //tags not empty==========================================
 
+  //all empty==========================================
+  let empty_where ="";
+  if(k_where===""&&t_where===""){
+    empty_where =" LIMIT 50";
+  }
+  //all empty==========================================
+  if(t_where!=="")t_where=(k_where===""?"and ":"or ")+t_where;
+
+  let sql = `select * from \`cantonese_dictionary_master_data\` where \`deleted\`=0 ${k_where} ${t_where} ${empty_where}`;
+  //example select * from `cantonese_dictionary_master_data` where `deleted`=0  and ( `chinese` IN ("通知","继续")  OR  `english` IN ("country","virus"))
   mysql_obj.get_all(sql,(error,result,field)=>{
-
     if(error)
     {
       handle_error(error);
@@ -163,11 +208,10 @@ async function delete_record(data,cb)
 
 
   let masterPreparingData = {
-    json_data:JSON.stringify(data.data),
     deleted:1,
   };
-  let master_feedback = await promise_mysql_pool.update(masterPreparingData,"cantonese_dictionary_master_data",`\`index\`="${recordIndex}"`);
   
+  let master_feedback = await promise_mysql_pool.update(masterPreparingData,"cantonese_dictionary_master_data",`\`index\`="${recordIndex}"`);
   /* master_feedback example
   [
     ResultSetHeader {

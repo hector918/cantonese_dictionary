@@ -1,8 +1,9 @@
 import {cej,preload_image,raw_post,raw_get} from '../js/general.js';
 class search_page {
-  on_send_request(evt)
+  on_send_request(search_box)
   {
-    raw_get("api/v1/readrecord",(responses_text)=>{
+    let v_base64 = btoa(encodeURIComponent(search_box.value));    
+    raw_get(`api/v1/readrecord?text=${v_base64}`,(responses_text)=>{
       try {
         let json = JSON.parse(responses_text);
         for(let x of json['result'])
@@ -17,14 +18,33 @@ class search_page {
     //evt.preventDefault();
   
   }
-  on_input_box_keyup(evt)
+  on_input_box_keyup_by_enter(evt)
   {
+    switch(evt.keyCode)
+    {
+      case 13:
+        //
+        this.on_send_request(this.search_box);
+      break;
+      default:
+
+    }
+    
+  }
+  on_input_box_keyup_by_step_up(evt){
+    //
     this.time_intervel = 0;
   }
-
   create_one_tile(json)
   {
-    
+    //if tile already exist, move it up front
+    if(this.tilesList[json.dbId]!=undefined)
+    {
+      let tile = this.tilesList[json.dbId];
+      this['tile_frame'].insertBefore(tile.self,this['tile_frame'].childNodes[0]);
+      return;
+    }
+
     let inner_field = [];
 
     inner_field.push({
@@ -42,7 +62,7 @@ class search_page {
     for(let x in json)
     {
       switch(x){
-        case "english":case "chinese":case "phonics":case "tags":
+        case "english":case "chinese":case "phonics":case "tags":case "dbId":
           //
         break;
         
@@ -109,27 +129,9 @@ class search_page {
 
     let tile = cej(tileStructure,this['tile_frame']);
     this['tile_frame'].insertBefore(tile.self,this['tile_frame'].childNodes[0]);
+
+    this['tilesList'][json.dbId]=tile;
     
-  }
-  on_verification_click(evt)
-  {
-    //
-    try {
-      let source_string = this['usernameinput'].value + this['passwordinput'].value;
-      let hash = CryptoJS.SHA3(source_string);
-      page_var.hashkey = hash;
-
-      let form = {action : "verification"};
-
-      //var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(form), 'secret key 123').toString();
-
-      raw_post(form,"/api/v1/");
-    } catch (error) {
-      console.log(error)
-    }
-
-    this['on_verification_button'].addEventListener("click",this.on_verification_click);
-      
   }
 
   structure() {
@@ -169,7 +171,7 @@ class search_page {
               {
                 tagname_:"h1",
                 class:"title is-2",
-                innerHTML_:"Word for search.",
+                innerHTML_:"Cantonese dictionary with English phonics.",
                 style:"text-shadow: #fff 1px 0 0, #fff 0 1px 0, #fff -1px 0 0, #fff 0 -1px 0;",
               },
               {
@@ -197,33 +199,31 @@ class search_page {
     
     this.parent = parent;
     //this.structure();
+    this.tilesList={};
     this.self = cej(this.structure(),this)['self'];
-    this['search_box'].addEventListener("keyup",this.on_input_box_keyup.bind(this));
+    this['search_box'].addEventListener("keyup",this.on_input_box_keyup_by_enter.bind(this));
 
     ///this is for input box step responses
-    let intervel = 1000;
-    this.time_intervel=intervel;
-    setInterval((evt)=>{
-      if(this.time_intervel<=intervel)
-      {
-        this.time_intervel+=intervel;
-      }
-      
-      if(this.time_intervel===intervel)
-      {
-        this.on_send_request();
-      }
-    },intervel);
+      // this['search_box'].addEventListener("keyup",this.on_input_box_keyup_by_step_up.bind(this)); 
+      // let intervel = 1000;
+      // this.time_intervel=intervel;
+      // setInterval((evt)=>{
+      //   if(this.time_intervel<=intervel)
+      //   {
+      //     this.time_intervel+=intervel;
+      //   }
+        
+      //   if(this.time_intervel===intervel)
+      //   {
+      //     this.on_send_request(this.search_box);
+      //   }
+      // },intervel);
     ///end of input box step responses
 
 
     parent.appendChild(this.self);
 
-    // this['login_form'].addEventListener("submit",this.on_submit);
-    // this['on_username_button'].addEventListener("click",this.on_username_click);
-    // this['on_verification_button'].addEventListener("click",this.on_verification_click);
-    //this['passwordinput'];
-    this.on_send_request();
+    this.on_send_request(this.search_box);
 
   }
 
