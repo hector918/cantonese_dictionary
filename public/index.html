@@ -23,12 +23,20 @@
     <script type="module">
         import {search_page} from './components/search_page.js';
         let frame = new search_page(document.body);
+        
+        window.onload = function (){
+            let str =window.location.href;
+            str = str.slice(str.indexOf("?text=")+6);
+            if(frame["on_send_request"])
+            {
+                frame.on_send_request(str);
+            }
+        }
     </script>
     <script>
         var page_var = {
             hashkey : null,
         }
-        
     </script>
 </head>
 

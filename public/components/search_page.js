@@ -1,11 +1,12 @@
 import {cej,preload_image,raw_post,raw_get} from '../js/general.js';
 class search_page {
-  on_send_request(search_box)
+  on_send_request(search_text)
   {
-    let v_base64 = btoa(encodeURIComponent(search_box.value));    
+    let v_base64 = btoa(encodeURIComponent(search_text));    
     raw_get(`api/v1/readrecord?text=${v_base64}`,(responses_text)=>{
       try {
         let json = JSON.parse(responses_text);
+        this.remove_tile("all");
         for(let x of json['result'])
         {
           this.create_one_tile(x);
@@ -24,7 +25,7 @@ class search_page {
     {
       case 13:
         //
-        this.on_send_request(this.search_box);
+        this.on_send_request(this.search_box.value);
       break;
       default:
 
@@ -34,6 +35,28 @@ class search_page {
   on_input_box_keyup_by_step_up(evt){
     //
     this.time_intervel = 0;
+  }
+  remove_tile(index="all")
+  {
+    if(index==="all")
+    {
+      if(Object.values(this.tilesList).length)
+        for(let x in this.tilesList)
+        {
+          let tile = this.tilesList[x].self;
+          tile.parentNode.removeChild(tile);
+          delete this.tilesList[x]
+        }
+    }
+    else
+    {
+      if(this.tilesList[index]!=undefined)
+      {
+        let tile = this.tilesList[index].self;
+        tile.parentNode.removeChild(tile);
+        delete this.tilesList[index]
+      }
+    }
   }
   create_one_tile(json)
   {
@@ -63,11 +86,10 @@ class search_page {
     {
       switch(x){
         case "english":case "chinese":case "phonics":case "tags":case "dbId":
-          //
+          //skip those keys
         break;
         
         default:
-          //
           inner_field.push({
             tagname_:"p",
             innerHTML_:json[x],
@@ -140,7 +162,7 @@ class search_page {
       if(this.backgroundEventLimiter===null)
       {
         this.backgroundEventLimiter=1;
-        let imgUrl = `https://picsum.photos/${Math.round(this['search_page'].clientWidth*1.1)}/${Math.round(this['search_page'].clientHeight*1.1)}?blur=2`;
+        let imgUrl = `https://picsum.photos/${(this['search_page'].clientWidth+10)}/${(this['search_page'].clientHeight+10)}?blur=2`;
         
         preload_image((xhr)=>{          
           this['search_page'].style.backgroundImage=`url(${imgUrl})`;
@@ -164,7 +186,7 @@ class search_page {
           export_:"search_page",
           tagname_ : "section",
           class : "hero",
-          style:`transition: background-image ease-in-out 0.5s;background: url(https://picsum.photos/${Math.round(window.innerWidth*1.1)}/500?blur=2);background-position:center;background-color:rgba(0, 0, 0, 0.5);background-size: cover;`,
+          style:`transition: background-image ease-in-out 0.5s;background: url(https://picsum.photos/${(window.innerWidth+10)}/500?blur=2);background-position:center;background-color:rgba(0, 0, 0, 0.5);background-size: cover;`,
           childrens_ : [{
             class : "hero-body has-text-centered",
             childrens_ : [
@@ -223,7 +245,7 @@ class search_page {
 
     parent.appendChild(this.self);
 
-    this.on_send_request(this.search_box);
+    this.on_send_request(this.search_box.value);
 
   }
 

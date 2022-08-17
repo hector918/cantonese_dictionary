@@ -185,6 +185,7 @@ class input_page {
         try {
 
           let {master_insertId} = JSON.parse(rst['result']);
+          this['card_title_box']=`Record Id:${master_insertId}`;
           this.dbId = master_insertId;
           this.set_card_state(rst['content'],"success");
           let timer = setTimeout(() => {
@@ -256,6 +257,7 @@ class input_page {
     fakehost['tagbox_add_button'].addEventListener("click",input_page_obj.tagBox_on_click.bind(fakehost),true);
     fakehost['tagbox_add_button'].addEventListener("blur",input_page_obj.tagBox_on_blur.bind(fakehost),true);
     fakehost['tagbox_add_button'].addEventListener("keyup",input_page_obj.tagsbox_on_keypress.bind(fakehost),true);
+    
     fakehost['card_delete_button'].addEventListener("click",this.on_close_card_click.bind(singleCard));
     fakehost.set_card_state=this.set_card_state.bind(fakehost);
     fakehost.tagsbox_add_tag = this.tagsbox_add_tag.bind(fakehost);
@@ -266,7 +268,7 @@ class input_page {
       fakehost.tagsbox.appendChild(cej(this.tag(x),{}).self);
     }
     
-    
+    fakehost['card_title_box'].innerHTML=`Record Id:${json['dbId']||undefined}`;
     fakehost['dbId']=json['dbId']||undefined;
     
     this['fakehost']=fakehost;
@@ -345,8 +347,12 @@ class input_page {
                   tagname_:"p",
                   class:"card-header-title",
                   style:"justify-content: space-between;",
-                  innerHTML_:"Add record",
                   childrens_:[
+                    {
+                      tagname_:"span",
+                      export_:"card_title_box",
+                      
+                    },
                     {
                     tagname_:"span",
                     class:"block",

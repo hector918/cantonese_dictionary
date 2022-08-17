@@ -2,6 +2,7 @@ const fs = require('fs');
 const util = require('util');
 const CryptoJS = require("crypto-js");
 const db_action = require('./db_action.js');
+const search_js = require('./search_and_cache.js');
 const config = require('./config.js');
 // const tg =  require('./telegram.js');
 function debug_to_file(content) {
@@ -85,7 +86,7 @@ function process_post(par) {
 
     case "addrecord":case "updaterecord":
       //
-
+      search_js.remove_cache(par.postBody);
       db_action.add_record(par.postBody, (result) => {
         par.ResContent = {
           content: {
@@ -99,6 +100,7 @@ function process_post(par) {
       });
       break;
       case "deleterecord":
+        search_js.remove_cache(par.postBody);
         db_action.delete_record(par.postBody, (result) => {
           par.ResContent = {
             content: {
@@ -142,7 +144,6 @@ function api_direct_end(par) {
     debug_to_file(par.Request.method + " ws=" + (typeof (par.SessionDoc)) + ' [ ' + Math.round((process.uptime() - par.on_request_time) * 1000) + "ms ]" + ' ' + par.Request.url);
     debug_to_file(par.debug_footprint);
     print_usage();
-    //console.log(token)
   }
 
   //ends
@@ -202,13 +203,11 @@ function api_res_end(par, ifcipher = false) {
     debug_to_file(par.Request.method + " " + status_code + " ws=" + (typeof (par.SessionDoc)) + ' ' + par.Request.connection.remoteAddress + ' [' + Math.round((process.uptime() - par.on_request_time) * 1000) + "ms]" + ' ' + par.Request.url);
     debug_to_file(par.debug_footprint);
     //print_usage();
-    //console.log(token)
   }
   for (let x in header_json) {
     par.Respond.setHeader(x, header_json[x]);
   }
   if (ifcipher) {
-    console.log(par['password'])
     var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(content), par['password']).toString();
 
     par.Respond.end(ciphertext);

@@ -68,17 +68,17 @@ function OnRequest(req, res) {
         switch (url_parts) {
           case (url_parts.match(/(?:js|css|img|png|webfont|ttf|svg|woff|html|htm|woff2)$/) || {}).input: case "/favicon.ico":
             public_file_access.ReadStaticFile(url_parts, par_);
-            break;
+          break;
           case (url_parts.match(/^\/api\//) || {}).input:
             //handling get, must contains "/api/" within url
             handle_GET(par_);
-            break;
+          break;
           case "/bb":
             public_file_access.ReadStaticFile("/hz.html", par_);
-            break;
+          break;
           default:
             public_file_access.ReadStaticFile("/index.html", par_);
-            break;
+          break;
         }
         break;
     }

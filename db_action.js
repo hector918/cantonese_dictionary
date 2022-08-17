@@ -1,11 +1,6 @@
 const {mysql_obj,promise_mysql_pool,search_key_in_deep_obj:skido} = require('./mysql_pool_class.js');
-function trim(text)
-{
-  let regex = /^\s*|\s*$/g;
-  return text.replace(regex,"");
-}
-// const {mysql_obj_not_sync} = require('./mysql_class_not_sync.js');
-//====================================================================
+let lastest_time_stamp;
+//=========================================================
 function handle_error(error)
 {
   console.log(error);
@@ -49,6 +44,24 @@ function filterOf_str_json(content)
     return "";
   }  
 }
+
+async function read_record_result_process(error,result,field,callback){
+  if(error)
+  {
+    handle_error(error);
+    callback(error,result,field);
+    return;
+  }
+  result = result.map(el=>{
+    //save 
+    // console.log(el,Date.parse(el.timestamp),el.timestamp)
+    
+    el['json_data']['dbId']=el['index'];
+    return el['json_data'];
+  });
+
+  callback(error,result,field);
+}
 async function add_record(data,callback)
 {
   //  
@@ -83,6 +96,7 @@ async function add_record(data,callback)
     //update
     
     master_feedback = await promise_mysql_pool.update(masterPreparingData,"cantonese_dictionary_master_data",`\`index\`="${recordIndex}"`);
+    master_feedback['insertId']=recordIndex;
   }
   
   /* example of master feedback
@@ -114,6 +128,14 @@ async function read_user_keypair(name)
   return rows[0]['value'];
 }
 
+async function read_lastest_record(cb){
+  //
+  let sql = `select * from \`cantonese_dictionary_master_data\` where \`deleted\`=0 order by \`timestamp\` desc limit 50; `;
+  //example select * from `cantonese_dictionary_master_data` where `deleted`=0  and ( `chinese` IN ("通知","继续")  OR  `english` IN ("country","virus"))
+  mysql_obj.get_all(sql,(error,result,field)=>{
+    read_record_result_process(error,result,field,cb)}
+  );
+}
 
 async function read_record(search_obj,cb)
 {  
@@ -162,19 +184,8 @@ async function read_record(search_obj,cb)
   let sql = `select * from \`cantonese_dictionary_master_data\` where \`deleted\`=0 ${k_where} ${t_where} ${empty_where}`;
   //example select * from `cantonese_dictionary_master_data` where `deleted`=0  and ( `chinese` IN ("通知","继续")  OR  `english` IN ("country","virus"))
   mysql_obj.get_all(sql,(error,result,field)=>{
-    if(error)
-    {
-      handle_error(error);
-      cb(error,result,field);
-      return;
-    }
-    result = result.map(el=>{
-      el['json_data']['dbId']=el['index'];
-      return el['json_data'];
-    });
-
-    cb(error,result,field);
-  });
+    read_record_result_process(error,result,field,cb)}
+  );
 }
 async function delete_record(data,cb)
 {
@@ -231,7 +242,6 @@ async function delete_record(data,cb)
     master_affectedRows:skido(master_feedback,"affectedRows"),
     master_insertId:recordIndex,
   }
-  console.log(master_feedback);
   cb(rst);
  } catch (error) {
   cb({"error":error.toString()});
@@ -242,6 +252,7 @@ async function delete_record(data,cb)
 module.exports = { 
   add_record,
   read_record,
+  read_lastest_record,
   delete_record,
   handle_error,
   read_user_keypair,
