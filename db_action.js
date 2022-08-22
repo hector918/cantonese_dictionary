@@ -13,7 +13,6 @@ function getType(things)
     case "object":
       if (Array.isArray(things)) return 'array';
       return 'json';
-    break;
     default:
       return result;
   }

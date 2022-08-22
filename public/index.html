@@ -26,10 +26,10 @@
         
         window.onload = function (){
             let str =window.location.href;
-            str = str.slice(str.indexOf("?text=")+6);
-            if(frame["on_send_request"])
+            if(str.indexOf("?text=")!=-1)
             {
-                frame.on_send_request(str);
+                str = str.slice(str.indexOf("?text=")+6);
+                if(frame["on_send_request"]) frame.on_send_request(str);
             }
         }
     </script>

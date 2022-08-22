@@ -6,6 +6,7 @@ function trim(text)
   let regex = /^\s*|\s*$/g;
   return text.replace(regex,"");
 }
+
 function remove_cache(json){
   /*
   {
@@ -24,16 +25,20 @@ function remove_cache(json){
   }
   */
 
-  let index = json['data']['dbId'];
-  if(typeof index !== 'number') return false;
-  
-  let record = record_map.get(index);
-  keyword_map.delete(record.english);
-  keyword_map.delete(record.chinese);
-
-  for(let el of Object.keys(record.tags)) tags_map.delete(el);
-  
-  record_map.delete(index);
+  let dbId = json['dbId'];
+  let new_keyword = ['english','chinese'];
+  let old_record = record_map.get(dbId);
+  new_keyword.forEach(el=>{
+    if(old_record[el]) keyword_map.delete(old_record[el]);
+    if(json[el]) keyword_map.delete(json[el]);
+  });
+  if(json['tags']!=undefined)
+  {
+    for(let x in json["tags"])
+    {
+      tags_map.delete(x);
+    }
+  }
 }
 function update_cache(search_obj,db_records){
   //fill cache from every query
@@ -52,8 +57,17 @@ function update_cache(search_obj,db_records){
     record_map.set(el.dbId,el);
     const rm_pointer = record_map.get(el.dbId);
     
-    keyword_map.set(el.english,el.dbId);
-    keyword_map.set(el.chinese,el.dbId);
+    if(search_obj['keyword']!=undefined)
+      for(let x of search_obj.keyword){
+        if(el.english.toLowerCase()===x||el.chinese===x)
+        {
+          let y = keyword_map.get(x);
+          y.push(el.dbId);
+        }
+      }
+
+    // keyword_map.set(el.english,el.dbId);
+    // keyword_map.set(el.chinese,el.dbId);
 
     if(search_obj['tags']!=undefined){
       for(let x of search_obj.tags){
@@ -73,7 +87,8 @@ function search(str,callback){
   {
     //if search text is empty function 
     db_action.read_lastest_record((error,result,field)=>{
-      update_cache({},result);
+
+      if(error===null) update_cache({},result);
       callback(error,result,field);
     });
     return;
@@ -100,7 +115,8 @@ function search(str,callback){
     }
     tags_match = tags_arr;
   }  
-  if(keyword_match) keyword_match=keyword_match.map(el=>trim(el));
+  if(keyword_match) keyword_match=keyword_match.map(el=>trim(el)).slice(0,10);
+  //10 keyword search limit
 
   let search_obj = {"tags":tags_match,"keyword":keyword_match};
 
@@ -135,7 +151,9 @@ function search(str,callback){
           {
             if(keyword_map.has(word))
             {
-              keyword_rst.push(record_map.get(keyword_map.get(word)));
+              let rd = keyword_map.get(word);
+              rd.forEach(el=>keyword_rst.push(record_map.get(el)));
+              // keyword_rst.push(record_map.get(keyword_map.get(word)));
             }
             else
               missing_flag=true;
@@ -152,7 +170,7 @@ function search(str,callback){
 
   //if cache dont has the record then read db
   db_action.read_record(search_obj,(error,result,field)=>{
-    update_cache(search_obj,result);
+    if(error===null) update_cache(search_obj,result);
     //bring back the result
     callback(error,result,field);
   });

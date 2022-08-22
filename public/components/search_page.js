@@ -1,4 +1,5 @@
 import {cej,preload_image,raw_post,raw_get} from '../js/general.js';
+import {search_bar} from './search_bar.js';
 class search_page {
   on_send_request(search_text)
   {
@@ -157,56 +158,41 @@ class search_page {
   }
 
   structure() {
-    //event hook 防止多次读取图片
-    addEventListener('resize',(e)=>{
-      if(this.backgroundEventLimiter===null)
-      {
-        this.backgroundEventLimiter=1;
-        let imgUrl = `https://picsum.photos/${(this['search_page'].clientWidth+10)}/${(this['search_page'].clientHeight+10)}?blur=2`;
-        
-        preload_image((xhr)=>{          
-          this['search_page'].style.backgroundImage=`url(${imgUrl})`;
-          this.backgroundEventLimiter=null;
-        },imgUrl);
-        
-      }
-    });
-    this.backgroundEventLimiter=null;
     ////////////////////////////////////
     let search_input = {
       tagname_:"input",
       class:"input is-medium",
       type:"text",
       placeholder:"Search...",
-      export_:"search_box",
+      // export_:"search_box",
     }
     return {
       childrens_:[
         {
           export_:"search_page",
-          tagname_ : "section",
-          class : "hero",
-          style:`transition: background-image ease-in-out 0.5s;background: url(https://picsum.photos/${(window.innerWidth+10)}/500?blur=2);background-position:center;background-color:rgba(0, 0, 0, 0.5);background-size: cover;`,
-          childrens_ : [{
-            class : "hero-body has-text-centered",
-            childrens_ : [
-              {
-                tagname_:"h1",
-                class:"title is-2",
-                innerHTML_:"Cantonese dictionary with English phonics.",
-                style:"text-shadow: #fff 1px 0 0, #fff 0 1px 0, #fff -1px 0 0, #fff 0 -1px 0;",
-              },
-              {
-                class:"field has-addons has-addons-centered",
-                childrens_:[
-                  {
-                    class : "control",
-                    childrens_:[search_input],
-                  },
-                ]
-              }
-            ]
-          }]
+          // tagname_ : "section",
+          // class : "hero",
+          // style:`transition: background-image ease-in-out 0.5s;background: url(https://picsum.photos/${(window.innerWidth+10)}/500?blur=2);background-position:center;background-color:rgba(0, 0, 0, 0.5);background-size: cover;`,
+          // childrens_ : [{
+          //   class : "hero-body has-text-centered",
+          //   childrens_ : [
+          //     {
+          //       tagname_:"h1",
+          //       class:"title is-2",
+          //       innerHTML_:"Cantonese dictionary with English phonics.",
+          //       style:"text-shadow: #fff 1px 0 0, #fff 0 1px 0, #fff -1px 0 0, #fff 0 -1px 0;",
+          //     },
+          //     {
+          //       class:"field has-addons has-addons-centered",
+          //       childrens_:[
+          //         {
+          //           class : "control",
+          //           childrens_:[search_input],
+          //         },
+          //       ]
+          //     }
+          //   ]
+          // }]
         },
         {
           class:"columns is-multiline",
@@ -220,29 +206,13 @@ class search_page {
   constructor(parent) {
     
     this.parent = parent;
-    //this.structure();
+    let search_bar_ = new search_bar(parent);
+    this.search_box=search_bar_.search_input_box;
+
     this.tilesList={};
     this.self = cej(this.structure(),this)['self'];
-    this['search_box'].addEventListener("keyup",this.on_input_box_keyup_by_enter.bind(this));
-
-    ///this is for input box step responses
-      // this['search_box'].addEventListener("keyup",this.on_input_box_keyup_by_step_up.bind(this)); 
-      // let intervel = 1000;
-      // this.time_intervel=intervel;
-      // setInterval((evt)=>{
-      //   if(this.time_intervel<=intervel)
-      //   {
-      //     this.time_intervel+=intervel;
-      //   }
-        
-      //   if(this.time_intervel===intervel)
-      //   {
-      //     this.on_send_request(this.search_box);
-      //   }
-      // },intervel);
+    this.search_box.addEventListener("keyup",this.on_input_box_keyup_by_enter.bind(this));
     ///end of input box step responses
-
-
     parent.appendChild(this.self);
 
     this.on_send_request(this.search_box.value);

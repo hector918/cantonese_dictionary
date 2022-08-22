@@ -25,7 +25,7 @@ Take minimum framework because it will be less maintenance.
   - entrance at search_and_cache.js -> search()
 
 - generate qrcode and access by it.
-  - building on progrsss
+  - building in progrsss
 
 ---
 

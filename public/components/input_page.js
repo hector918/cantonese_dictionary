@@ -232,8 +232,10 @@ class input_page {
     let exist_tags = getElBy(this['tagsbox'],"div");
     //no allow double
     if(exist_tags.find(x=>x.innerHTML===text)!==undefined) return;
+    let tmp ={};
+    let tag = cej(this.tag(text),tmp);
     
-    let tag = cej(this.tag(text),{});
+    tmp['tag_delete_button'].addEventListener("click",this.tagsbox_tag_remove_button_click);
     this['tagsbox'].appendChild(tag.self);
   }
   tagsbox_tag_remove_button_click(evt)
@@ -261,11 +263,15 @@ class input_page {
     fakehost['card_delete_button'].addEventListener("click",this.on_close_card_click.bind(singleCard));
     fakehost.set_card_state=this.set_card_state.bind(fakehost);
     fakehost.tagsbox_add_tag = this.tagsbox_add_tag.bind(fakehost);
+
+    fakehost.tagsbox_tag_remove_button_click=this.tagsbox_tag_remove_button_click;
     fakehost.tag = this.tag.bind(fakehost);
 
     if(json&&json.tags) for(let x in json['tags'])
     {
-      fakehost.tagsbox.appendChild(cej(this.tag(x),{}).self);
+      fakehost.tagsbox_add_tag(x);
+      //fakehost.tagsbox.appendChild(cej(this.tag(x),{}).self);
+
     }
     
     fakehost['card_title_box'].innerHTML=`Record Id:${json['dbId']||undefined}`;
@@ -292,7 +298,8 @@ class input_page {
         {
           tagname_:"button",
           class:"delete is-small",
-          event_:{"click":this.tagsbox_tag_remove_button_click},
+          // event_:{"click":this.tagsbox_tag_remove_button_click.bind(this)},
+          export_:"tag_delete_button",
         },
         
       ]
