@@ -1,28 +1,86 @@
-import {cej,preload_image,raw_post,raw_get} from '../js/general.js';
-
+import {cej,preload_image,raw_post,raw_get,LoadScript} from '../js/general.js';
 class search_bar{
+  on_resize(e){
+    if(this.backgroundEventLimiter===null)
+    {
+      this.backgroundEventLimiter=1;
+      let imgUrl = `https://picsum.photos/${(e.target.innerWidth+10)}/${(e.target.innerHeight+10)}?blur=5`;
+      
+      preload_image((xhr)=>{   
+        fakehost['input_box_background'].style.backgroundImage=`url(${imgUrl})`;
+        this.backgroundEventLimiter=null;
+      },imgUrl);
+    }
+  }
+  on_qrcode_button_click(evt){
+    // qrcode_popup_button
+    let url =window.location.href;
+    if(url.indexOf("?text=")!=-1){
+      url = url.slice(url.indexOf("?text="));
+    }
+    // console.log(`${url}?text=${this.search_input_box.value}`)
+    let qrcode = new QRCode(this.qrcode_image, {
+      text: `${url}?text=${this.search_input_box.value}`,
+      width: 300,
+      height: 300,
+      colorDark : "#5868bf",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.H
+    });
+    
+    document.querySelector(".modal").classList.toggle("is-active");
+
+  }
   constructor(parent){
     //
+    LoadScript('https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js');
+
     this.parent = parent;
     let fakehost={};
     parent.append(cej(this.input_structure(),fakehost)['self']);
     parent.append(cej(this.cta_structure(),this)['self']);
     this['search_input_box']=fakehost['search_input_box'];
-    addEventListener('resize',(e)=>{
-      if(this.backgroundEventLimiter===null)
-      {
-        this.backgroundEventLimiter=1;
-        let imgUrl = `https://picsum.photos/${(e.target.innerWidth+10)}/${(e.target.innerHeight+10)}?blur=5`;
-        
-        preload_image((xhr)=>{   
-          fakehost['input_box_background'].style.backgroundImage=`url(${imgUrl})`;
-          this.backgroundEventLimiter=null;
-        },imgUrl);
-        
-      }
-    });
+    addEventListener('resize',this.on_resize);
     this.backgroundEventLimiter=null;
-
+    fakehost['qrcode_popup_button'].addEventListener('click',this.on_qrcode_button_click.bind(fakehost));
+    
+    parent.append(cej(this.modal_structure(),fakehost)['self']);
+  
+  }
+  modal_structure(){
+    //
+    
+    /*
+    <div class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <!-- Any other Bulma elements you want -->
+      </div>
+      <button class="modal-close is-large" aria-label="close"></button>
+    </div>
+    */
+    return {
+      class:"modal",
+      childrens_:[
+        {
+          class:"modal-background",
+        },
+        {
+          class:"modal-content",
+          childrens_:[{
+            tagname_:"figure",
+            class:"image",
+            export_:"qrcode_image",
+          }]
+        },
+        {
+          tagname_:"button",
+          class:"modal-close is-large",
+          "aria-label":"close",
+          event_:{"click":(e)=>{document.querySelector(".modal").classList.toggle("is-active")}},
+        }
+      ]
+    }
   }
   input_structure(){
     //
@@ -50,7 +108,8 @@ class search_bar{
                     childrens_:[{
                       tagname_:"button",
                       class:"button is-link is-light",
-                      innerHTML_:"QRcode"
+                      innerHTML_:"QRcode",
+                      export_:'qrcode_popup_button',
                     },]
                   },
                   {

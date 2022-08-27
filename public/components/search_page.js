@@ -1,4 +1,5 @@
 import {cej,preload_image,raw_post,raw_get} from '../js/general.js';
+
 import {search_bar} from './search_bar.js';
 class search_page {
   on_send_request(search_text)
@@ -222,3 +223,5 @@ class search_page {
 }
 
 export {search_page as search_page}; 
+
+//<script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>

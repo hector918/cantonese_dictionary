@@ -298,7 +298,6 @@ class input_page {
         {
           tagname_:"button",
           class:"delete is-small",
-          // event_:{"click":this.tagsbox_tag_remove_button_click.bind(this)},
           export_:"tag_delete_button",
         },
         
