@@ -43,15 +43,12 @@ function createHTML_json(json,host_object)
 function appendCSS(css)
 {
   var style = document.createElement('style');
-
   if (style.styleSheet) {
       style.styleSheet.cssText = css;
   } else {
       style.appendChild(document.createTextNode(css));
   }
-
   document.getElementsByTagName('head')[0].appendChild(style);
-
 }
 function dynamicallyLoadScript(url) {
   var script = document.createElement("script");  // create a script DOM node
@@ -66,7 +63,6 @@ function preload_image(callback,picture_url)
   img.onload=callback;
   img.src = picture_url;
 }
-
 function getElBy(obj,text,searchTarget="tagName"){
   let result =[];
   for(let x of obj.childNodes)
@@ -87,44 +83,30 @@ function getElBy(obj,text,searchTarget="tagName"){
 }
 function raw_get(path,cb)
 {
-  //
-  
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() 
   {
     if (this.readyState == 4 && this.status == 200) {
       
       // this.responseText
-      if(cb)
-      {
-        cb(this.responseText);
-      }
+      if(cb) cb(this.responseText);
       //process_receive_normal(this.responseText);
     }
   };
-  
   xhttp.open("GET", path );
   xhttp.send();
 }
 function raw_post(data,path,cb)
 {
-  //
-  
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() 
   {
     if (this.readyState == 4 && this.status == 200) {
-      
       // this.responseText
-      if(cb)
-      {
-        cb(this.responseText);
-
-      }
+      if(cb) cb(this.responseText);
       //process_receive_normal(this.responseText);
     }
   };
-  
   xhttp.open("POST", path );
   xhttp.send(JSON.stringify(data));
 }

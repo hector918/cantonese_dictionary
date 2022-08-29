@@ -2,12 +2,10 @@ import {cej,appendCSS,getElBy,raw_post, raw_get} from '../js/general.js';
 
 function raw_post_c (json_data,path,callback)
 {
-  
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       try {
-        
         var bytes  = CryptoJS.AES.decrypt(this.responseText, page_var['hashkey']);
         var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));    
         callback(decryptedData);
@@ -15,7 +13,6 @@ function raw_post_c (json_data,path,callback)
         let rst = JSON.parse(this.responseText);
         callback(rst);
       }
-      
     }
   };
   //add a random seed to the package
@@ -28,7 +25,6 @@ function raw_post_c (json_data,path,callback)
   }
   let ciphertext = CryptoJS.AES.encrypt(JSON.stringify(json_data), page_var['hashkey']).toString();
 
-  
   try {
     xhttp.open("POST", path );
     xhttp.send(`{"at":"${ciphertext}","username":"${page_var['username']}"}`);
@@ -36,7 +32,6 @@ function raw_post_c (json_data,path,callback)
   } catch (error) {
     callback({"errors":error.toString()});
   }
-  
 }
 
 function reset_password(){
@@ -211,7 +206,6 @@ class input_page {
     //
     evt.target.setAttribute("type","input");
     evt.target.value = "";
-
   }
   
   tagsbox_on_keypress(evt)
@@ -279,10 +273,8 @@ class input_page {
     
     this['fakehost']=fakehost;
     return singleCard;
-
   }
   on_add_card_click(e){
-    
     let card = this.create_card({},this);
     getElBy(card.self,"input")[0].focus();
   }
@@ -300,12 +292,10 @@ class input_page {
           class:"delete is-small",
           export_:"tag_delete_button",
         },
-        
       ]
     }
   }
   structure() {
-  
     let inputField =(label,value="")=>{
       return {
         class:"field",
@@ -372,7 +362,6 @@ class input_page {
                     }
                   ]
                 },
-                
               ]
             },
             {
@@ -439,7 +428,6 @@ class input_page {
                   innerHTML_:"delete record",
                   export_:"deleteRecordButton",
                 },
-                
               ]
             }
           ]
@@ -455,7 +443,6 @@ class input_page {
         [{
           class:"card hover-hack-singlecard function-card-centered",
           style:"display: flex;justify-content: center;align-items: center; height: 100%;",
-          
           childrens_:
           [{
             class:"card-content",
@@ -575,11 +562,8 @@ class input_page {
 
   constructor(parent) 
   {
-    
     this.parent = parent;
-
     parent.appendChild(cej(this.structure(),this)['self']);
-
   }
 }
 

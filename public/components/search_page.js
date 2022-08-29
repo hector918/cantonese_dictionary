@@ -160,40 +160,11 @@ class search_page {
 
   structure() {
     ////////////////////////////////////
-    let search_input = {
-      tagname_:"input",
-      class:"input is-medium",
-      type:"text",
-      placeholder:"Search...",
-      // export_:"search_box",
-    }
     return {
       childrens_:[
         {
           export_:"search_page",
-          // tagname_ : "section",
-          // class : "hero",
-          // style:`transition: background-image ease-in-out 0.5s;background: url(https://picsum.photos/${(window.innerWidth+10)}/500?blur=2);background-position:center;background-color:rgba(0, 0, 0, 0.5);background-size: cover;`,
-          // childrens_ : [{
-          //   class : "hero-body has-text-centered",
-          //   childrens_ : [
-          //     {
-          //       tagname_:"h1",
-          //       class:"title is-2",
-          //       innerHTML_:"Cantonese dictionary with English phonics.",
-          //       style:"text-shadow: #fff 1px 0 0, #fff 0 1px 0, #fff -1px 0 0, #fff 0 -1px 0;",
-          //     },
-          //     {
-          //       class:"field has-addons has-addons-centered",
-          //       childrens_:[
-          //         {
-          //           class : "control",
-          //           childrens_:[search_input],
-          //         },
-          //       ]
-          //     }
-          //   ]
-          // }]
+
         },
         {
           class:"columns is-multiline",
@@ -223,5 +194,3 @@ class search_page {
 }
 
 export {search_page as search_page}; 
-
-//<script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>

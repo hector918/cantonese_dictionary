@@ -12,7 +12,7 @@ class search_bar{
       },imgUrl);
     }
   }
-  on_qrcode_button_click(evt){
+  on_qrcode_button_click(){
     // qrcode_popup_button
     let url =window.location.href;
     if(url.indexOf("?text=")!=-1){
@@ -23,16 +23,14 @@ class search_bar{
       text: `${url}?text=${this.search_input_box.value}`,
       width: 300,
       height: 300,
-      colorDark : "#5868bf",
-      colorLight : "#ffffff",
+      colorDark : "#cc3300",
+      colorLight : "white",
       correctLevel : QRCode.CorrectLevel.H
     });
     
     document.querySelector(".modal").classList.toggle("is-active");
-
   }
   constructor(parent){
-    //
     LoadScript('https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js');
 
     this.parent = parent;
@@ -123,7 +121,6 @@ class search_bar{
                         type:"search",
                         export_:"search_input_box",
                         placeholder:"press enter to search...",
-
                       },
                       {
                         class:"icon is-medium is-left",
@@ -134,7 +131,6 @@ class search_bar{
                           "aria-hidden":"true",
                         }]
                       },
-                      
                     ]
                   },
                   {
@@ -153,6 +149,43 @@ class search_bar{
       }]
     }
   }
+  control_tag_on_click(evt){
+
+    this.search_input_box.value=evt.target.getAttribute("search_word");
+    const kbEvent = new KeyboardEvent('keyup', {keyCode:13,},false);
+    this.search_input_box.dispatchEvent(kbEvent);
+    
+  }
+  control_tag_structure(text,search_word,style="link",size="m"){
+    //
+    let style_list = {
+      primary : "is-primary",
+      link : "is-link",
+      success : "is-success",
+      black : "is-black",
+      warning : "is-warning",
+      danger : "is-danger",
+      info : "is-info",
+    };
+    let size_list ={
+      s : "is-small",
+      m : "is-medium",
+      l : "is-large"
+    };
+    let tag = {
+      class:"control",
+      childrens_:[{
+        tagname_:"span",
+        class:`tag ${style_list[style]||"is-danger"} ${size_list[size]||"is-medium"}`,
+        innerHTML_:text,
+        search_word,
+        event_:{"click":this.control_tag_on_click.bind(this)},
+      }],
+    };
+    
+    return tag;
+    
+  }
   cta_structure(){
     return {
       class:"box cta",
@@ -160,55 +193,14 @@ class search_bar{
         class:"columns is-mobile is-centered",
         childrens_:[{
           class:"field is-grouped is-grouped-multiline",
+          export_:"control_tag_box",
           childrens_:[
-            {
-              class:"control",
-              childrens_:[{
-                tagname_:"span",
-                class:"tag is-link is-medium",
-                innerHTML_:"Link",
-              }],
-            },
-            {
-              class:"control",
-              childrens_:[{
-                tagname_:"span",
-                class:"tag is-success is-medium",
-                innerHTML_:"success",
-              }],
-            },
-            {
-              class:"control",
-              childrens_:[{
-                tagname_:"span",
-                class:"tag is-black is-medium",
-                innerHTML_:"Black",
-              }],
-            },
-            {
-              class:"control",
-              childrens_:[{
-                tagname_:"span",
-                class:"tag is-warning is-medium",
-                innerHTML_:"warning",
-              }],
-            },
-            {
-              class:"control",
-              childrens_:[{
-                tagname_:"span",
-                class:"tag is-danger is-medium",
-                innerHTML_:"danger",
-              }],
-            },
-            {
-              class:"control",
-              childrens_:[{
-                tagname_:"span",
-                class:"tag is-info is-medium",
-                innerHTML_:"info",
-              }],
-            },
+            this.control_tag_structure("tags:hector","tags:hector"),
+            this.control_tag_structure("tags:test","tags:test","success"),
+            this.control_tag_structure("continue","continue","black"),
+            this.control_tag_structure("warning","warning","warning"),
+            this.control_tag_structure("danger","danger","danger"),
+            this.control_tag_structure("info","info","info"),
           ]
         }]
       }]
