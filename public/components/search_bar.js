@@ -19,6 +19,7 @@ class search_bar{
       url = url.slice(url.indexOf("?text="));
     }
     // console.log(`${url}?text=${this.search_input_box.value}`)
+    this.qrcode_input.value = `${url}?text=${this.search_input_box.value}`;
     let qrcode = new QRCode(this.qrcode_image, {
       text: `${url}?text=${this.search_input_box.value}`,
       width: 300,
@@ -65,11 +66,26 @@ class search_bar{
         },
         {
           class:"modal-content",
-          childrens_:[{
-            tagname_:"figure",
-            class:"image",
-            export_:"qrcode_image",
-          }]
+          childrens_:[
+            {
+              class:"field has-addons",
+              childrens_:[
+                {tagname_:"p",class:"control",childrens_:[{tagname_:"a",class:"button is-static",innerHTML_:"Share this page with: "}]},
+                {tagname_:"p",class:"control is-expanded",childrens_:[{tagname_:"input",export_:"qrcode_input",readonly:"",class:"input",event_:{"focus":e=>e.target.select()}}]}
+              ]
+            },
+            {
+              style:"width: 90%;margin: 20px auto ;",
+              childrens_:[
+                {
+                  tagname_:"figure",
+                  class:"image",
+                  export_:"qrcode_image",
+                }
+              ]
+            }
+            
+          ]
         },
         {
           tagname_:"button",
