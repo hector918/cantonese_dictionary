@@ -1,6 +1,6 @@
 # Cantonese dictionary with english phonics
 
-Live instance is on [cd.binserv.us](cd.binserv.us) 
+Live instance is on [cd.binserv.us](binserv.us) 
 
 
 about source code 
