@@ -147,6 +147,7 @@ function read_static_files(filename,par)
         }
         if(config.debug)
         {
+            
             let content = `RF${par.Respond.socket.remoteAddress}:${par.Request.socket.localPort}`+'['+Math.round((process.uptime()-par.on_request_time)*1000)+"ms]"+filename;
 
             debug_to_file(content);
@@ -157,7 +158,7 @@ function read_static_files(filename,par)
 	catch(ex)
 	{
         consoletofile(ex);
-        par.Respond.statusCode=500;
+        par.Respond.statusCode = 500;
 		par.Respond.end("500");
 	}
 }
