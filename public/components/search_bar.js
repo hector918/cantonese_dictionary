@@ -20,6 +20,7 @@ class search_bar{
     }
     // console.log(`${url}?text=${this.search_input_box.value}`)
     this.qrcode_input.value = `${url}?text=${this.search_input_box.value}`;
+    this.qrcode_image.innerHTML="";
     let qrcode = new QRCode(this.qrcode_image, {
       text: `${url}?text=${this.search_input_box.value}`,
       width: 300,
@@ -109,7 +110,7 @@ class search_bar{
           class:"container",
           childrens_:[{
             class:"card",
-            style:"background-color: rgba(0, 0, 0, 0.2);border-radius: 20px;",
+            style:"background-color: rgba(0, 0, 0, 0.2);",
             childrens_:[{
               class:"card-content",
               childrens_:[{

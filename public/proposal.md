@@ -12,6 +12,7 @@ Two roll:
 - Vistors
   - As a user, when I visit the website I see a links to single page and navigate all the function from it.
   - As a user I can type in the search input to search the keyword.
+  - As a user I can click the qrcode button to gererate qrcode for the page.
   - As a user I can click on the preset tag to search a specific catalog.
 
   - As a user, if I try to submit with no entry in the input box, I see a the screen fill with most recent words that inputted.

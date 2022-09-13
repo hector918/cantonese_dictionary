@@ -81,20 +81,34 @@ function getElBy(obj,text,searchTarget="tagName"){
   }
   return result
 }
-function raw_get(path,cb)
+async function raw_get(path,cb,error_handling)
 {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() 
-  {
-    if (this.readyState == 4 && this.status == 200) {
-      
-      // this.responseText
-      if(cb) cb(this.responseText);
-      //process_receive_normal(this.responseText);
+  try {
+    const res = await fetch(path);
+    switch(res.status)
+    {
+      case 200: cb(await res.json()); break;
+      default : error_handling(`Url ${res.status} ${res.statusText}`);
     }
-  };
-  xhttp.open("GET", path );
-  xhttp.send();
+  } catch (error) {
+    error_handling(error);
+  }
+  // var xhttp = new XMLHttpRequest();
+  // xhttp.onreadystatechange = function() 
+  // {
+  //   if (this.readyState == 4 && this.status == 200) {
+      
+  //     // this.responseText
+  //     if(cb) cb(this.responseText);
+  //     //process_receive_normal(this.responseText);
+  //   }
+  //   else if(this.status != 200 & this.status!= 0){
+  //     console.log(this.status)
+  //     if(fail_cb)fail_cb(this);
+  //   }
+  // };
+  // xhttp.open("GET", path );
+  // xhttp.send();
 }
 function raw_post(data,path,cb)
 {

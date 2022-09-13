@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cantonese dictionary with english phonics</title>
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+    <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet"> -->
+    <!-- <link href="https://fonts.googleapis.com/css?family=Questrial&display=swap" rel="stylesheet"> -->
+    <!-- Bulma Version 0.9.0-->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" /> -->
+    <!--https://cdnjs.com/libraries/crypto-js-->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+    <style>
+        body{
+          padding: 0%;
+          margin: 0%;
+        }
+        .container{
+          height:183px;
+          display: table;
+          width: 100%;
+        }
+        .card{
+          display: table-cell;
+          vertical-align: middle;
+          border-radius: 0%;
+        }
+        .cta{
+          margin-bottom: 10px;
+          box-shadow: 0 5px 5px lightgray;
+          padding: 10px;
+          height: auto;
+        }
+        .is-grouped-multiline{
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(80px,120px));
+          gap: 4px;
+          text-align: center;
+          font-size: larger;
+          padding-top: 6px;
+          justify-content: center;
+        }
+        .is-grouped-multiline .control{
+          border-radius: 10px;
+          border: 2px dotted gray;
+          padding: 4px;
+          box-shadow: 0;
+          transition: box-shadow 1s ease-in-out;
+          font-weight: normal;
+        }
+        .is-grouped-multiline .control:hover{
+          transition: box-shadow 1s ease-in-out;
+          box-shadow: rgba(84, 84, 84, 0.5) 0 5px 5px 0;
+          font-weight: bold;
+          cursor: pointer;
+        }
+        .hero-body .button {
+          background-color: #fff;
+          border: 1px solid #d5d9d9;
+          border-radius: 8px;
+          box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
+          box-sizing: border-box;
+          color: #0f1111;
+          cursor: pointer;
+          display: inline-block;
+          font-family: "Amazon Ember",sans-serif;
+          font-size: 13px;
+          line-height: 29px;
+          padding: 0 10px 0 11px;
+          position: relative;
+          text-align: center;
+          text-decoration: none;
+          user-select: none;
+          -webkit-user-select: none;
+          touch-action: manipulation;
+          vertical-align: middle;
+          width: 100px;
+        }
+
+        .hero-body .button:hover {
+          background-color: #f7fafa;
+        }
+
+        .hero-body .button:focus {
+          border-color: #008296;
+          box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
+          outline: 0;
+        }
+        .control{
+          display: inline;
+        }
+        .hero .control:first-child{
+          justify-self: end;
+        }
+        .control input{
+          width: 100%;
+        }
+        .control input,.control button{
+          font-size: 1rem;
+        }
+        .hero .content{
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+          column-gap: 4px;
+          row-gap: 10px;
+          padding: 10px;
+        }
+        .content:first-child{
+          /* justify-self: self-end; */
+        }
+        .content:last-child{
+          /* justify-self: self-start; */
+        }
+        .is-rounded{
+          border-radius: 10px;
+          line-height: 1.6rem;
+        }
+        .modal{
+          position: fixed;
+          /* display: none; */
+          visibility: hidden;
+          align-items: center;
+          justify-content: center;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          width: 100%;
+          animation: 0.3s slideout;
+          animation-fill-mode: forwards;
+        }
+        .modal.is-active{
+          animation-duration: 0.5s;
+          animation-name: slidein;
+          visibility: visible;
+          display: flex;
+          z-index: 40;
+        }
+        
+        .modal-background{
+          background-color: rgba(10,10,10,.86);
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          position: absolute;
+        }
+        .modal-content{
+          z-index: 1;
+          width: 90%;
+        }
+        .modal-close{
+          z-index: 1;
+          height: 32px;
+          max-height: 32px;
+          max-width: 32px;
+          min-height: 32px;
+          min-width: 32px;
+          width: 32px;
+          position: fixed;
+          right: 20px;
+          top: 20px;
+          cursor: pointer;
+          content: "";
+          background-color: rgba(10,10,10,.86);
+          border-radius: 290486px;
+        }
+        .modal .control .is-static{
+          color: aliceblue;
+        }
+        .modal .control input{
+          text-align: center;
+          border-radius: 5%;
+          font-size: larger;
+          
+        }
+        .modal-close::before {
+          height: 2px;
+          width: 50%;
+          background-color: #fff;
+          content: "";
+          display: block;
+          left: 50%;
+          position: absolute;
+          top: 50%;
+          transform: translateX(-50%) translateY(-50%) rotate(45deg);
+          transform-origin: center center;
+        }
+        .modal-close::after {
+          height: 50%;
+          width: 2px;
+          background-color: #fff;
+          content: "";
+          display: block;
+          left: 50%;
+          position: absolute;
+          top: 50%;
+          transform: translateX(-50%) translateY(-50%) rotate(45deg);
+          transform-origin: center center;
+
+        }
+        .image{
+          display: flex;
+          justify-content: center;
+        }
+        .image img{
+          border: 0.5rem outset antiquewhite;
+          outline: 0.5rem solid khaki;
+          box-shadow: 0 0 0 2rem gray;
+          border-radius: 12px;
+          font: bold 1rem sans-serif;
+          margin: 2rem;
+          padding: 1rem;
+          outline-offset: 0.5rem;
+        }
+        .is-multiline{
+          display: grid;
+          grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+          gap: 20px;
+          padding: 0px 10px;
+          margin-bottom: 50px;
+        }
+        .is-multiline .column .title{
+          font-size:2rem;
+          font-weight: bold;
+        }
+        .is-multiline .column .subtitle{
+          font-size:1.2rem;
+        }
+        .is-multiline .column{
+          border: none;
+          box-shadow: 0 0.5em 1em -0.125em rgb(10 10 10 / 10%), 0 0 0 1px rgb(10 10 10 / 2%);
+          padding: 10px;
+          transition: box-shadow 0.5s ease-in-out;
+        }
+        .is-multiline .column:hover{
+          transition: box-shadow 0.5 ease-in-out;
+          box-shadow: rgba(14, 14, 14, 0.5) 0 2px 5px 0;
+
+        }
+        .card .tags{
+          display: grid;
+          grid-template-columns: repeat(12,1fr);
+          gap: 10px;
+        }
+        .card .tag{
+          border: dotted lightblue 1px;
+          background-color: aliceblue;
+          padding: 2px 8px;
+          border-radius: 4px;
+
+          transition: box-shadow 1s ease-in-out;
+          box-shadow: none;
+        }
+        .card .tag:hover{
+
+          transition: box-shadow 1s ease-in-out;
+          box-shadow: rgba(143, 141, 164, 0.5) 0 0px 5px 5px;
+        }
+        @keyframes slidein {
+          from {
+            margin-bottom: 100%;
+            width: 300%;
+            visibility: hidden;
+          }
+
+          to {
+            margin-top: 0%;
+            width: 100%;
+            visibility: visible;
+          }
+        }
+        @keyframes slideout {
+          from {
+            margin-top: 0%;
+            /* width: 100%; */
+            visibility: visible;
+
+          }
+
+          to {
+            margin-bottom: 100%;
+            margin-left: 100%;
+            visibility: hidden;
+
+          }
+          
+        }
+    </style>
+    <script type="module">
+        import {search_page} from './components/search_page.js';
+        let frame = new search_page(document.body);
+        console.log(frame)
+        window.onload = function (){
+            let str =window.location.href;
+            if(str.indexOf("?text=")!=-1)
+            {
+                str = str.slice(str.indexOf("?text=")+6);
+                if(frame["on_send_request"]) frame.on_send_request(str);
+            }
+        }
+    </script>
+    <script>
+        var page_var = {
+            hashkey : null,
+        }
+    </script>
+</head>
+
+<body>
+    
+</body>
+
+</html>

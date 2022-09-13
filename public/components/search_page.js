@@ -1,25 +1,29 @@
 import {cej,preload_image,raw_post,raw_get} from '../js/general.js';
 
 import {search_bar} from './search_bar.js';
+import {error_bar} from './error_bar.js';
 class search_page {
+  //event
+  on_error(obj){
+
+    let error_display = new error_bar(this.error_display);
+    error_display.set_text(Date() + " " + obj.toString());
+
+    error_display.error_button.addEventListener("click",error_display.on_destory.bind(error_display));
+
+  }
   on_send_request(search_text)
   {
-    let v_base64 = btoa(encodeURIComponent(search_text));    
-    raw_get(`api/v1/readrecord?text=${v_base64}`,(responses_text)=>{
-      try {
-        let json = JSON.parse(responses_text);
+    let v_base64 = btoa(encodeURIComponent(search_text));
+    raw_get(`api/v1/readrecord?text=${v_base64}`,
+      (json)=>{
         this.remove_tile("all");
         for(let x of json['result'])
         {
           this.create_one_tile(x);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-      
-    });  
-    //evt.preventDefault();
-  
+        } 
+      },this.on_error.bind(this)
+    );
   }
   on_input_box_keyup_by_enter(evt)
   {
@@ -38,6 +42,7 @@ class search_page {
     //
     this.time_intervel = 0;
   }
+  //event
   remove_tile(index="all")
   {
     if(index==="all")
@@ -163,7 +168,7 @@ class search_page {
     return {
       childrens_:[
         {
-          export_:"search_page",
+          export_:"error_display",
 
         },
         {
