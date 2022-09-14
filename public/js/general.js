@@ -21,6 +21,9 @@ function createHTML_json(json,host_object)
           root['childrens'].push(children);
         }
       break;
+      case "innerHTML":case "innerText":case "textContent":
+        root.self[x]=json[x];
+      break;
       case "innerHTML_":
         root.self.innerHTML=json[x];
       break;

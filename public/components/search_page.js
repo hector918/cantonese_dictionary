@@ -164,17 +164,24 @@ class search_page {
   }
 
   structure() {
-    ////////////////////////////////////
+    
     return {
       childrens_:[
         {
           export_:"error_display",
-
         },
         {
           class:"columns is-multiline",
           export_:"tile_frame",
-          
+        },
+        {
+          tagname_:"footer",
+          childrens_:[{class:"content has-text-centere",
+          style:"text-align: center;",
+          childrens_:[{tagname_:"p",innerHTML:`<strong>About this APP</strong> by <a href="./about.html">HZ</a>. The source code is on  <a href="https://github.com/hector918/cantonese_dictionary">Github</a>.`}]}]
+        },
+        {
+          export_:"iframe",
         }
       ]
     }
@@ -197,5 +204,7 @@ class search_page {
   }
 
 }
-
+/*
+https://www.bing.com/translator?from=en&to=yue&setlang=en&text=apple
+*/
 export {search_page as search_page}; 

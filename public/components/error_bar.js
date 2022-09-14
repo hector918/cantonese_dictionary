@@ -37,7 +37,6 @@ class error_bar{
                 innerHTML_:"",
                 export_:"error_body",
               }]
-              
             },
             {
               class:" column",
@@ -47,11 +46,9 @@ class error_bar{
                 innerHTML_:"dismiss",
                 export_:"error_button",
               }]
-              
             },
           ]
         },
-
         {
           tagname_:"progress",
           class:"progress is-danger",
@@ -60,12 +57,9 @@ class error_bar{
           innerHTML_:"100%",
           export_:"error_progress_bar",
         },
-        
       ]
-      
     }
   }
-  
 }
 
 export{
