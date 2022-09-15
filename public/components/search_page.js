@@ -42,6 +42,60 @@ class search_page {
     //
     this.time_intervel = 0;
   }
+  on_bing_modal_close_click(evt){
+    this.qrcode_modal.classList.toggle("is-active");
+    this.qrcode_modal.remove();
+  }
+  on_bing_click(evt){
+    let fakehost = {};
+    
+    let modal_strcuture = {
+      class:"modal",
+      export_:"qrcode_modal",
+      childrens_:[
+        {
+          class:"modal-background",
+        },
+        {
+          class:"modal-content",
+          style:"height:90%",
+          export_:"bing_wrapper",
+          childrens_:[
+            {
+              tagname_:"iframe",
+              style:"width:100%;height:100%;",
+              src:`https://www.bing.com/translator?from=en&to=yue&setlang=en&text=${evt.target.getAttribute("chinese_word")}`,
+              title:"Inline Bing Translate",
+              width:Math.max(310,window.innerWidth),
+            },
+            {
+              style:"width: 90%;margin: 20px auto ;",
+              childrens_:[
+                {
+                  tagname_:"figure",
+                  class:"image",
+                  export_:"qrcode_image",
+                }
+              ]
+            }
+            
+          ]
+        },
+        {
+          tagname_:"button",
+          class:"modal-close is-large",
+          "aria-label":"close",
+          event_:{"click":this.on_bing_modal_close_click.bind(fakehost)},
+        }
+      ]
+    };
+
+    let wrapper = cej(modal_strcuture,fakehost);
+    // console.log(window.innerWidth,window.innerHeight)
+    this.iframe.append(wrapper.self);
+    wrapper.self.classList.add("is-active");
+    
+  }
   //event
   remove_tile(index="all")
   {
@@ -84,6 +138,7 @@ class search_page {
     inner_field.push({
       class:"subtitle",
       innerHTML_:json['chinese'],
+      childrens_:[{tagname_:"button",class:"button",innerHTML:"Bing-> pronunciation",style:"margin-left:10px;",chinese_word:json['chinese'],event_:{"click":this.on_bing_click.bind(this)}}]
     });
     inner_field.push({
       class:"title",
@@ -175,13 +230,14 @@ class search_page {
           export_:"tile_frame",
         },
         {
+          
+          export_:"iframe",
+        },
+        {
           tagname_:"footer",
           childrens_:[{class:"content has-text-centere",
           style:"text-align: center;",
           childrens_:[{tagname_:"p",innerHTML:`<strong>About this APP</strong> by <a href="./about.html">HZ</a>. The source code is on  <a href="https://github.com/hector918/cantonese_dictionary">Github</a>.`}]}]
-        },
-        {
-          export_:"iframe",
         }
       ]
     }

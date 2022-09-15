@@ -28,8 +28,8 @@ Take minimum framework because it will be less maintenance.
 - Generate qrcode and access by it.
   - entrance at public/search_bar.js -> on_qrcode_button_click()
 
-- Embed(iframe) google translate for Pronunciation demonstration
-  - working in process
+- Embed(iframe) Bing translate for Pronunciation demonstration
+
 
 ---
 

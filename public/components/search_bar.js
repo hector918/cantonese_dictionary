@@ -30,7 +30,10 @@ class search_bar{
       correctLevel : QRCode.CorrectLevel.H
     });
     
-    document.querySelector(".modal").classList.toggle("is-active");
+    this.qrcode_modal.classList.toggle("is-active");
+  }
+  on_qrcode_modal_close_click(evt){
+    this.fakehost.qrcode_modal.classList.toggle("is-active");
   }
   constructor(parent){
     LoadScript('https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js');
@@ -45,6 +48,7 @@ class search_bar{
     fakehost['qrcode_popup_button'].addEventListener('click',this.on_qrcode_button_click.bind(fakehost));
     
     parent.append(cej(this.modal_structure(),fakehost)['self']);
+    this.fakehost = fakehost;
   
   }
   modal_structure(){
@@ -61,6 +65,7 @@ class search_bar{
     */
     return {
       class:"modal",
+      export_:"qrcode_modal",
       childrens_:[
         {
           class:"modal-background",
@@ -92,7 +97,7 @@ class search_bar{
           tagname_:"button",
           class:"modal-close is-large",
           "aria-label":"close",
-          event_:{"click":(e)=>{document.querySelector(".modal").classList.toggle("is-active")}},
+          event_:{"click":this.on_qrcode_modal_close_click.bind(this)},
         }
       ]
     }
@@ -201,7 +206,6 @@ class search_bar{
     };
     
     return tag;
-    
   }
   cta_structure(){
     return {
