@@ -10,6 +10,7 @@
       font-family: Arial, Helvetica, sans-serif;
       margin: 0;
       height: 100%;
+      width: 100%;
     }
 
     html {
@@ -45,7 +46,7 @@
       vertical-align: middle;
       display: table-cell;
     }
-
+    
     .container {
       padding: 0 16px;
     }
@@ -76,13 +77,20 @@
       background-color: #555;
     }
     h1 {
-    font-size: 3rem;
+      font-size: 3rem;
     }
     h2 {
       font-size: 2rem;
     }
     p {
       font-size: 1.3rem;
+    }
+    .contact{
+      overflow-wrap: break-word;
+    }
+    .header{
+      box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+      margin-bottom: 30px;
     }
     @media screen and (max-width: 650px){
       /* h1 {
@@ -95,10 +103,18 @@
         font-size: 1.3rem;
       } */
     }
+    @media screen and (min-width: 650px){
+      .about-section p{
+        width: 68%;
+        margin: auto;
+        line-height: 1.8rem;
+      }
+    }
+    
   </style>
 </head>
 <body>
-  <div>
+  <div class="header">
     <div class="table">
       <div class="about-section">
         <h1>About This App</h1>
@@ -110,7 +126,7 @@
     </div>
   </div>
   
-  <div>
+  <div class="contact">
     <ul>
       <li>Kim's email : <a href = "mailto: proudtobecantonese@gmail.com">proudtobecantonese@gmail.com</a> </li>
       <li>WhatsAPP group : https://chat.whatsapp.com/HJM7NKemiWf3h3LH5HDLLD</li>

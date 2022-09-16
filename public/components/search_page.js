@@ -58,7 +58,7 @@ class search_page {
         },
         {
           class:"modal-content",
-          style:"height:90%",
+          style:"height:90%;overflow: hidden;",
           export_:"bing_wrapper",
           childrens_:[
             {
@@ -66,7 +66,7 @@ class search_page {
               style:"width:100%;height:100%;",
               src:`https://www.bing.com/translator?from=en&to=yue&setlang=en&text=${evt.target.getAttribute("chinese_word")}`,
               title:"Inline Bing Translate",
-              width:Math.max(310,window.innerWidth),
+              width:Math.round(Math.max(310,window.innerWidth/2)),
             },
             {
               style:"width: 90%;margin: 20px auto ;",

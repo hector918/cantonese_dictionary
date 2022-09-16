@@ -1,6 +1,9 @@
 # Cantonese dictionary with english phonics
 
-Live instance is on [binserv.us](binserv.us) 
+- Live instance is on 
+  - with Bulma css framework: [http://binserv.us](http://binserv.us) 
+  - with no css framework: [http://binserv.us/index_with_buildin_css.html](http://binserv.us/index_with_buildin_css.html) 
+
 
 
 about source code 
