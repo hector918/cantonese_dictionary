@@ -147,7 +147,13 @@ function read_static_files(filename,par)
         }
         if(config.debug)
         {
-            let content = `RF${par.Respond.socket.remoteAddress}:${par.Request.socket.localPort}`+'['+Math.round((process.uptime()-par.on_request_time)*1000)+"ms]"+filename;
+            let remoteAddress = par.Respond.socket.remoteAddress||"unknow ip";
+            if(remoteAddress==="unknow ip")
+            {
+                console.log(par.Respond.socket);
+            }
+
+            let content = `RF${remoteAddress}:${par.Request.socket.localPort}`+'['+Math.round((process.uptime()-par.on_request_time)*1000)+"ms]"+filename;
 
             debug_to_file(content);
             console.log(new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '').split(" ")[1]+content);
