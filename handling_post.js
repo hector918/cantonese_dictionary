@@ -54,14 +54,11 @@ async function handle_POST(par) {
     if (keypair[json['username']] === undefined) {
       throw `username ${json['username']} cant be found.`;
     }
-
     par_['username'] = json['username'];
     par_['password'] = keypair[par_['username']];
-
-    let bytes = CryptoJS.AES.decrypt(json['at'], keypair[json['username']]);
-
+    let bytes = CryptoJS.AES.decrypt(json['at'], keypair[json['username']].toString());
+    
     par_.postBody = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-
 
   } catch (error) {
     par_.postBody = "";

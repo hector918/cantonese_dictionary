@@ -46,7 +46,7 @@ class input_page {
         let inVal = btoa(encodeURIComponent(evt.target.value));
         raw_get(`api/v1/readrecord?text=${inVal}`,(rsp)=>{
           try {
-            let rst = JSON.parse(rsp);
+            let rst = rsp;
 
             rst['result'].forEach(el=>this.create_card(el,this));
 

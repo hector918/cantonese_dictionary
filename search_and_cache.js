@@ -29,7 +29,7 @@ function remove_cache(json){
   let new_keyword = ['english','chinese'];
   let old_record = record_map.get(dbId);
   new_keyword.forEach(el=>{
-    if(old_record[el]) keyword_map.delete(old_record[el]);
+    if(old_record&&old_record[el]) keyword_map.delete(old_record[el]);
     if(json[el]) keyword_map.delete(json[el]);
   });
   if(json['tags']!=undefined)
