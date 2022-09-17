@@ -43,6 +43,7 @@ class search_bar{
     parent.append(cej(this.input_structure(),fakehost)['self']);
     parent.append(cej(this.cta_structure(),this)['self']);
     this['search_input_box']=fakehost['search_input_box'];
+    this['search_button'] = fakehost['search_button'];
     addEventListener('resize',this.on_resize);
     this.backgroundEventLimiter=null;
     fakehost['qrcode_popup_button'].addEventListener('click',this.on_qrcode_button_click.bind(fakehost));
@@ -161,6 +162,7 @@ class search_bar{
                       tagname_:"button",
                       class:"button is-primary is-light",
                       innerHTML_:"Search",
+                      export_:"search_button",
                     },]
                   }
                 ]

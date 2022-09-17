@@ -252,6 +252,7 @@ class search_page {
     this.tilesList={};
     this.self = cej(this.structure(),this)['self'];
     this.search_box.addEventListener("keyup",this.on_input_box_keyup_by_enter.bind(this));
+    search_bar_.search_button.addEventListener("click",()=>{this.on_send_request(this.search_box.value)});
     ///end of input box step responses
     parent.appendChild(this.self);
 
