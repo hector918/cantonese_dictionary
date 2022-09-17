@@ -1,4 +1,4 @@
-# Cantonese dictionary with english phonics
+# Cantonese dictionary with english romanization
 
 - Live instance is on 
   - with Bulma css framework: [http://binserv.us](http://binserv.us) 
