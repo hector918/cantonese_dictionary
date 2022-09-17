@@ -24,6 +24,8 @@
     .table{
       display: table;
       height: 100%;
+      max-width: 800px;
+      margin: auto;
     }
     .column {
       float: left;
@@ -40,7 +42,6 @@
     .about-section {
       padding: 50px;
       text-align: center;
-      background-color: #474e5d;
       color: white;
       height: 100%;
       vertical-align: middle;
@@ -78,18 +79,24 @@
     }
     h1 {
       font-size: 3rem;
+      max-width: 580px;
+      margin: auto;
     }
     h2 {
       font-size: 2rem;
+      
     }
     p {
       font-size: 1.3rem;
     }
     .contact{
       overflow-wrap: break-word;
+      max-width: 800px;
+      margin: auto;
     }
     .header{
       box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+      background-color: #474e5d;
       margin-bottom: 30px;
     }
     @media screen and (max-width: 650px){
@@ -112,6 +119,12 @@
     }
     
   </style>
+  <script>
+    window.onload = ()=>{
+      // var scale = window.outerWidth / 1280;
+      // document.querySelector('meta[name="viewport"]').setAttribute('content', 'width='+1280+', initial-scale='+scale+'');
+    }
+  </script>
 </head>
 <body>
   <div class="header">
