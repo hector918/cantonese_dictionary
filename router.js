@@ -76,9 +76,9 @@ function OnRequest(req, res) {
             //handling get, must contains "/api/" within url
             handle_GET(par_);
           break;
-          case "/bb":
-            public_file_access.ReadStaticFile("/hz.html", par_);
-          break;
+          // case "/bb":
+          //   public_file_access.ReadStaticFile("/hz.html", par_);
+          // break;
           default:
             public_file_access.ReadStaticFile("/index.html", par_);
           break;

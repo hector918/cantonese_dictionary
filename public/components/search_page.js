@@ -125,7 +125,7 @@ class search_page {
     if(this.tilesList[json.dbId]!=undefined)
     {
       let tile = this.tilesList[json.dbId];
-      this['tile_frame'].insertBefore(tile.self,this['tile_frame'].childNodes[0]);
+      this['tile_frame'].append(tile.self);
       return;
     }
 
@@ -212,7 +212,7 @@ class search_page {
     ]};
 
     let tile = cej(tileStructure,this['tile_frame']);
-    this['tile_frame'].insertBefore(tile.self,this['tile_frame'].childNodes[0]);
+    this['tile_frame'].append(tile.self);
 
     this['tilesList'][json.dbId]=tile;
     

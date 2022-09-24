@@ -110,7 +110,6 @@ mysql_pool.delete = async function (where, table) {
 }
 mysql_pool.get_all = async function (sql, callback) {
   //mysql_log()
-
   this.query(sql, callback);
 }
 //end of insert update read delete

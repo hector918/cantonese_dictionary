@@ -130,7 +130,7 @@ async function read_user_keypair(name)
 async function read_lastest_record(cb){
   //
   let sql = `select * from \`cantonese_dictionary_master_data\` where \`deleted\`=0 order by \`timestamp\` desc limit 50; `;
-  //example select * from `cantonese_dictionary_master_data` where `deleted`=0  and ( `chinese` IN ("通知","继续")  OR  `english` IN ("country","virus"))
+
   mysql_obj.get_all(sql,(error,result,field)=>{
     read_record_result_process(error,result,field,cb)}
   );
@@ -259,42 +259,98 @@ module.exports = {
 
 ///mysql table stucture below
 /*
+-- phpMyAdmin SQL Dump
+-- version 5.2.0
+-- https://www.phpmyadmin.net/
+--
+-- Host: :3306
+-- Generation Time: Sep 24, 2022 at 01:04 PM
+-- Server version: 8.0.30-0ubuntu0.22.04.1
+-- PHP Version: 8.1.10
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+--
+-- Database: `cantoese_dictionary`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cantonese_dictionary_config`
+--
+
 CREATE TABLE `cantonese_dictionary_config` (
   `index` int NOT NULL,
   `key` varchar(20) NOT NULL,
   `value` json NOT NULL,
   `timestamp` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
-INSERT INTO `cantonese_dictionary_config` (`index`, `key`, `value`, `timestamp`) VALUES
-(1, 'input_keypair', '{\"kim\": \"1234\"}', '2022-07-30 18:44:19');
+-- --------------------------------------------------------
 
-
-
-
+--
+-- Table structure for table `cantonese_dictionary_master_data`
+--
 
 CREATE TABLE `cantonese_dictionary_master_data` (
   `index` int NOT NULL,
-  `english` varchar(100) NOT NULL,
-  `chinese` varchar(100) NOT NULL,
+  `english` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `chinese` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `json_data` json NOT NULL,
   `tags` json NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cantonese_dictionary_steps_data`
+--
+
+CREATE TABLE `cantonese_dictionary_steps_data` (
+  `index` int NOT NULL,
+  `user` varchar(50) NOT NULL,
+  `action` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `content` json NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Indexes for dumped tables
 --
 
 --
+-- Indexes for table `cantonese_dictionary_config`
+--
+ALTER TABLE `cantonese_dictionary_config`
+  ADD PRIMARY KEY (`index`);
+
+--
 -- Indexes for table `cantonese_dictionary_master_data`
 --
 ALTER TABLE `cantonese_dictionary_master_data`
+  ADD PRIMARY KEY (`index`),
+  ADD KEY `timestamp` (`timestamp`);
+
+--
+-- Indexes for table `cantonese_dictionary_steps_data`
+--
+ALTER TABLE `cantonese_dictionary_steps_data`
   ADD PRIMARY KEY (`index`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `cantonese_dictionary_config`
+--
+ALTER TABLE `cantonese_dictionary_config`
+  MODIFY `index` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `cantonese_dictionary_master_data`
@@ -302,64 +358,11 @@ ALTER TABLE `cantonese_dictionary_master_data`
 ALTER TABLE `cantonese_dictionary_master_data`
   MODIFY `index` int NOT NULL AUTO_INCREMENT;
 
-
-
-CREATE TABLE `cantonese_dictionary_steps_data` (
-  `index` int NOT NULL,
-  `user` varchar(50) NOT NULL,
-  `action` varchar(10) NOT NULL,
-  `content` json NOT NULL,
-  `timestamp` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `cantonese_dictionary_steps_data`
---
-ALTER TABLE `cantonese_dictionary_steps_data`
-  ADD PRIMARY KEY (`index`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
 --
 -- AUTO_INCREMENT for table `cantonese_dictionary_steps_data`
 --
 ALTER TABLE `cantonese_dictionary_steps_data`
   MODIFY `index` int NOT NULL AUTO_INCREMENT;
-
-CREATE TABLE `cantonese_dictionary_steps_data` (
-  `index` int NOT NULL,
-  `user` varchar(50) NOT NULL,
-  `action` varchar(10) NOT NULL,
-  `content` json NOT NULL,
-  `timestamp` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `cantonese_dictionary_steps_data`
---
-ALTER TABLE `cantonese_dictionary_steps_data`
-  ADD PRIMARY KEY (`index`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `cantonese_dictionary_steps_data`
---
-ALTER TABLE `cantonese_dictionary_steps_data`
-  MODIFY `index` int NOT NULL AUTO_INCREMENT;
-
-
+COMMIT;
 
 */
