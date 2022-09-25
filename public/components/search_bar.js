@@ -18,7 +18,6 @@ class search_bar{
     if(url.indexOf("?text=")!=-1){
       url = url.slice(0,url.indexOf("?text="));
     }
-    console.log(url)
     // console.log(`${url}?text=${this.search_input_box.value}`)
     this.qrcode_input.value = `${url}?text=${this.search_input_box.value}`;
     this.qrcode_image.innerHTML="";
