@@ -51,7 +51,8 @@ function OnRequest(req, res) {
       case "OPTIONS":
         //如果是带有session并是options就直接返回 
         par_.status_code = 200;
-        general_function.ResWrite(par_);
+        api_res_end(par_);
+        // general_function.ResWrite(par_);
         break;
       case "POST":
 
@@ -106,7 +107,7 @@ function api_direct_end(par) {
 }
 
 function api_res_end(par) {
-  var par_ = debug_step_log(par, "api_res_end");
+  // var par_ = debug_step_log(par, "api_res_end");
 
   //所有返回客户端信息从此处集合发出
 
@@ -154,8 +155,8 @@ function api_res_end(par) {
   if (config.debug) {
 
     //调试用途
-    console.log(par.Request.method + " " + status_code + " ws=" + (typeof (par_.SessionDoc)) + ' ' + par.Request.connection.remoteAddress + ' [' + Math.round((process.uptime() - par.on_request_time) * 1000) + "ms]" + ' ' + par.Request.url);
-    console.log(par.debug_footprint);
+    // console.log(par.Request.method + " " + status_code + " ws=" + (typeof (par_.SessionDoc)) + ' ' + par.Request.connection.remoteAddress + ' [' + Math.round((process.uptime() - par.on_request_time) * 1000) + "ms]" + ' ' + par.Request.url);
+    // console.log(par.debug_footprint);
     //print_usage();
     //console.log(token)
   }

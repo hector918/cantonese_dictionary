@@ -1,5 +1,0 @@
-16:15:44[
-  { func_name: 'onrequest', time_record: 0.000025699999241624027 },
-  { uptime: '8ms', path: 'handle_POST' }
-]
-16:15:44'POST 200 ws=undefined 127.0.0.1 [9ms] /api/v1/'

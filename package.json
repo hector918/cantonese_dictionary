@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "crypto-js": "^4.1.1",
-    "mysql2": "^2.3.3"
+    "mysql2": "^2.3.3",
+    "nodemon": "^2.0.20",
+    "ws": "^8.12.0"
   }
 }
