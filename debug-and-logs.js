@@ -34,6 +34,14 @@ const get_date = (d) =>{
   _time.current = d.toISOString().replace(/T/, ' ').replace(/\..+/, '').split(" ")[0];
   return _time.current;
 }
+
+const writeFile_error_ENOENT = (err)=>{
+  if (err && err.code=="ENOENT") {
+    fs.mkdir(`./${dir_name}`,()=>{});
+    console.log(err);
+    log_error(err);
+  }
+}
 /////export below/////////////////////////////////////////////////////
 function request_log_to_file(session){
   let d = new Date();
@@ -46,15 +54,7 @@ function request_log_to_file(session){
     url : session.req.originalURL,
   }
   console.log(JSON.stringify(content));
-  fs.writeFile(`${dir_name}${get_date(d)}-request_log.txt`, JSON.stringify(content) + ",\r\n", { 'flag': 'a' }, function (err) {
-    if (err) {
-      if(err.code=="ENOENT"){
-        fs.mkdir(`./${dir_name}`,()=>{});
-      }
-      console.log(err);
-      log_error(err);
-    }
-  });
+  fs.writeFile(`${dir_name}${get_date(d)}-request_log.txt`, JSON.stringify(content) + ",\r\n", { 'flag': 'a' }, writeFile_error_ENOENT);
 }
 
 function request_file_log_to_file(session,file_path){
@@ -81,25 +81,13 @@ function request_file_log_to_file(session,file_path){
     file_path,
   }
   console.log(JSON.stringify(content));
-  fs.writeFile(`${dir_name}${get_date(d)}-request_file_log.txt`, JSON.stringify(content) + ",\r\n", { 'flag': 'a' }, function (err) {
-    if (err) {
-      if(err.code=="ENOENT"){
-        fs.mkdir(`./${dir_name}`,()=>{});
-      }
-      console.log(err);
-      log_error(err);
-    }
-  });
+  fs.writeFile(`${dir_name}${get_date(d)}-request_file_log.txt`, JSON.stringify(content) + ",\r\n", { 'flag': 'a' }, writeFile_error_ENOENT);
 }
 function log_error(error){
   let d = new Date();
   console.error(error);
   fs.writeFile(`${dir_name}${get_date(d)}-error_log.txt`, JSON.stringify(error) + ",\r\n", { 'flag': 'a' }, function (err) {
-    if (err) {
-      if(err.code=="ENOENT"){
-        fs.mkdir(`./${dir_name}`,()=>{});
-      }
-    }
+    if (err && err.code=="ENOENT") fs.mkdir(`./${dir_name}`);
   });
 }
 /////////////////////////////////////////

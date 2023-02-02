@@ -5,7 +5,8 @@ function cantonese_dictionary(cd){
   // console.log(url.parse(cd.req.url,true));
  
   // console.log(cd.req.url)
-  cd.get("/api",(cd)=>{
+  cd.get("/api/:id/:pa01/:pa02",(cd)=>{
+    console.log("in control",cd.params,cd.queries);
     cd.code(200).send("this is abcd under cd");
   });
   
