@@ -1,5 +1,5 @@
 const config = require('./config.js');
-const {onRequest} = require('./router-v2.js');
+const {onRequest} = require('./router-v3.js');
 require("./app");
 const websocketApp = require(`./websocket-app`);
 

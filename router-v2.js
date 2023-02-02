@@ -104,33 +104,26 @@ function preprocess_req(session) {
   session[session.req.method.toLowerCase()] = ( path , callback ) => {
     const parameter_path = path.split(":");
     const raw_path = parameter_path.shift();
-    if (raw_path === "*" || session.req.url.match(path_regex_create(raw_path)) !== null) {
-      try {
-        ///////////////////////////////////////////////
-        session["params"] = function (){///process params
-          let ret = {};
-          const tmp = session.req.url.replace(raw_path,"").split("/");
-          parameter_path.forEach((el,idx)=>{
-            ret[el.replaceAll('/',"")] = tmp[idx] || undefined;
-          });
-          return ret;
-        }();
-        session['queries'] = function (){//process query
-          const ret = {};
-          const tmp = session.req.url.split("?");
-          if(tmp.length < 2) return {};
-          tmp[1].split("&").map(el=>{
-            let eq = el.split("=");
-            return ret[eq[0]]= eq[1] || undefined;
-          });
-          return ret;
-        }();
-        ///////////////////////////////////////////////
-        callback(session);
-      } catch (error) {
-        on_error(error);
-      }
-    }
+    if (raw_path === "*" || session.req.url.match(path_regex_create(raw_path)) !== null) try {
+      
+      session["params"] = function (params_val){///process params
+        let ret = {};
+        parameter_path.forEach((el,idx)=> ret[el.replaceAll('/',"")] = params_val[idx] || undefined );
+        return ret;
+      }(session.req.url.replace(raw_path,"").split("/"));
+      session['queries'] = function (queries_val){//process query
+        const ret = {};
+        if(queries_val.length < 2) return {};
+        queries_val[1].split("&").map(el=>{
+          let [query_key, query_val] = el.split("=");
+          return ret[query_key] = query_val || undefined;
+        });
+        return ret;
+      }(session.req.url.split("?"));
+      ///////////////////////////////////////////////
+      callback(session);
+      return;
+    } catch (error) { on_error(error); }
   }
   return session;
 }
